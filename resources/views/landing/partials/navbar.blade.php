@@ -17,21 +17,17 @@
             
             <!-- Link Navigasi Tengah (Desktop) -->
             <div class="hidden md:flex items-center space-x-8">
-                <a href="#fitur" class="text-slate-300 hover:text-white transition-colors text-sm font-medium">Fitur AI</a>
-                <a href="#monetisasi" class="text-slate-300 hover:text-white transition-colors text-sm font-medium">Monetisasi</a>
-                <a href="#harga" class="text-slate-300 hover:text-white transition-colors text-sm font-medium">Harga</a>
+                <a href="#fitur" class="text-slate-300 hover:text-white transition-colors text-sm font-medium">Cara Kerja</a>
+                <a href="#kreator" class="text-slate-300 hover:text-white transition-colors text-sm font-medium">Untuk Kreator</a>
+                <a href="#brand" class="text-slate-300 hover:text-white transition-colors text-sm font-medium">Untuk Brand</a>
             </div>
 
             <!-- Tombol Aksi Kanan (Desktop) -->
             <div class="hidden md:flex items-center space-x-4">
                 
-                <!-- Tombol CTA Login dengan hover effect premium -->
-                <a href="/login" class="px-5 py-2.5 rounded-full bg-neutral-900 border border-neutral-800 hover:border-brand hover:bg-neutral-900 text-white text-sm font-medium transition-all group overflow-hidden relative">
-                    <span class="relative z-10 flex items-center gap-2">
-                        Masuk <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
-                    </span>
-                    <!-- Efek glow gradient saat di-hover -->
-                    <div class="absolute inset-0 bg-gradient-to-r from-brand to-brand opacity-0 group-hover:opacity-100 transition-opacity z-0"></div>
+                <!-- Tombol CTA Login dengan brand color premium -->
+                <a href="/login" class="px-6 py-2 rounded-full bg-gradient-to-r from-brand to-brand text-white text-sm font-bold shadow-lg shadow-brand/25 hover:shadow-brand/40 transition-all duration-300 transform hover:-translate-y-0.5 flex items-center gap-2">
+                    Masuk <i data-lucide="arrow-right" class="w-4 h-4"></i>
                 </a>
             </div>
 
@@ -56,9 +52,9 @@
          class="md:hidden absolute top-20 left-0 w-full bg-black border-b border-white/10 shadow-2xl"
          style="display: none;">
         <div class="px-4 py-6 space-y-4 flex flex-col">
-            <a href="#fitur" class="text-slate-300 hover:text-white text-base font-medium transition-colors">Fitur AI</a>
-            <a href="#monetisasi" class="text-slate-300 hover:text-white text-base font-medium transition-colors">Monetisasi</a>
-            <a href="#harga" class="text-slate-300 hover:text-white text-base font-medium transition-colors">Harga</a>
+            <a href="#fitur" class="text-slate-300 hover:text-white text-base font-medium transition-colors">Cara Kerja</a>
+            <a href="#kreator" class="text-slate-300 hover:text-white text-base font-medium transition-colors">Untuk Kreator</a>
+            <a href="#brand" class="text-slate-300 hover:text-white text-base font-medium transition-colors">Untuk Brand</a>
             <!-- Garis Pemisah -->
             <div class="h-px w-full bg-neutral-900 my-4"></div>
             <a href="/login" class="w-full text-center px-5 py-3 rounded-xl bg-gradient-to-r from-brand to-brand text-white text-base font-bold shadow-lg shadow-brand/25">

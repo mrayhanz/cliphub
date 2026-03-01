@@ -6,15 +6,13 @@
             <!-- Kolom 1: Informasi Brand & Sosial Media -->
             <div class="col-span-1 md:col-span-1">
                 <div class="flex items-center gap-2 mb-6">
-                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand to-brand flex items-center justify-center">
-                        <i data-lucide="scissors" class="text-white w-4 h-4"></i>
-                    </div>
+                    
                     <span class="font-bold text-xl tracking-tight text-white">
                         Clip<span class="text-brand-light">fluence</span>
                     </span>
                 </div>
                 <p class="text-slate-400 text-sm leading-relaxed mb-6">
-                    Platform AI terdepan untuk memotong video podcast atau stream menjadi klip viral, lengkap dengan fitur monetisasi instan.
+                    Platform distribusi UGC berbasis performa no. 1 di Indonesia. Hubungkan Brand dengan ribuan Kreator untuk hasilkan konversi maksimal tanpa biaya di muka.
                 </p>
                 <div class="flex space-x-4">
                     <a href="#" class="text-slate-500 hover:text-brand-light transition-colors">
@@ -31,12 +29,12 @@
 
             <!-- Kolom 2: Produk & Layanan -->
             <div>
-                <h3 class="text-white font-semibold mb-4">Produk</h3>
+                <h3 class="text-white font-semibold mb-4">Pengguna</h3>
                 <ul class="space-y-3">
-                    <li><a href="#" class="text-slate-400 hover:text-white text-sm transition-colors">AI Auto-Clipper</a></li>
-                    <li><a href="#" class="text-slate-400 hover:text-white text-sm transition-colors">Smart Captions</a></li>
-                    <li><a href="#" class="text-slate-400 hover:text-white text-sm transition-colors">Payment Gateway</a></li>
-                    <li><a href="#" class="text-slate-400 hover:text-white text-sm transition-colors">Creator Analytics</a></li>
+                    <li><a href="#" class="text-slate-400 hover:text-white text-sm transition-colors">Untuk Kreator & Clipper</a></li>
+                    <li><a href="#" class="text-slate-400 hover:text-white text-sm transition-colors">Untuk Brand & Agensi</a></li>
+                    <li><a href="#" class="text-slate-400 hover:text-white text-sm transition-colors">Sistem Pembayaran RPM</a></li>
+                    <li><a href="#" class="text-slate-400 hover:text-white text-sm transition-colors">Cara Kerja AI Anti-Fraud</a></li>
                 </ul>
             </div>
 
@@ -51,7 +49,7 @@
                             Karir <span class="ml-2 py-0.5 px-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs rounded-full">Hiring</span>
                         </a>
                     </li>
-                    <li><a href="#" class="text-slate-400 hover:text-white text-sm transition-colors">Blog Tech</a></li>
+                    <li><a href="#" class="text-slate-400 hover:text-white text-sm transition-colors">Blog / Edukasi Kreator</a></li>
                     <li><a href="#" class="text-slate-400 hover:text-white text-sm transition-colors">Kontak Support</a></li>
                 </ul>
             </div>
