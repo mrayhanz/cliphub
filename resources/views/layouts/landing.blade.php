@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="id" class="scroll-smooth">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Clipfluence - Platform UGC & Clipper No. 1 di Indonesia</title>
     
     <!-- Memuat aset CSS & JS Laravel Vite -->
@@ -31,13 +31,13 @@
         * { -ms-overflow-style: none; scrollbar-width: none; } /* IE, Edge, dan Firefox */
     </style>
 </head>
-<body class="bg-black text-slate-50 antialiased overflow-x-hidden selection:bg-brand/30 selection:text-brand-light">
+<body class="bg-black text-slate-50 antialiased selection:bg-brand/30 selection:text-brand-light">
 
     <!-- Memanggil komponen Navbar Global -->
     @include('landing.partials.navbar')
 
     <!-- Konten Utama Halaman -->
-    <main class="min-h-screen">
+    <main>
         @yield('content')
     </main>
 
@@ -47,17 +47,22 @@
     <!-- Inisialisasi library animasi AOS dan Lucide Icons -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Konfigurasi animasi scroll
-            AOS.init({
-                once: true, // Animasi hanya berjalan sekali saat di-scroll
-                offset: 50,
-                duration: 800,
-                easing: 'ease-out-cubic',
-            });
-            
-            // Render semua icon lucide
-            lucide.createIcons();
+        // Inisialisasi AOS langsung 
+        AOS.init({
+            once: false,  // Animasi diputar setiap elemen masuk viewport 
+            mirror: true, // Animasi "bermain mundur" saat elemen dilewati agar saat scroll ke atas otomatis masuk lagi
+            offset: 50, 
+            duration: 800,
+            easing: 'ease-out-cubic',
+            anchorPlacement: 'top-bottom',
+        });
+        
+        // Render semua icon lucide
+        lucide.createIcons();
+
+        // Refresh AOS persis setelah *semua* aset & font beres ter-load
+        window.addEventListener('load', function() {
+            AOS.refresh();
         });
     </script>
 </body>
