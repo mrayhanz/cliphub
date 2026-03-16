@@ -1,59 +1,100 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Clipfluence
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Clipfluence adalah platform berbasis web yang dibangun menggunakan **Laravel 12** dan **TailwindCSS 4**.
 
-## About Laravel
+## Prasyarat
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Sebelum menginstal dan menjalankan website ini, pastikan sistem Anda telah terinstal:
+- **PHP** >= 8.2
+- **Composer** (untuk dependensi backend PHP)
+- **Node.js** dan **npm** (untuk dependensi frontend JS/CSS)
+- Server Database (MySQL / MariaDB / SQLite / PostgreSQL dll). Penggunaan **Laragon** sangat disarankan jika Anda menggunakan Windows.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Langkah-Langkah Menjalankan Website (Lokal)
 
-## Learning Laravel
+Ikuti langkah-langkah di bawah ini untuk mengonfigurasi dan menjalankan project Clipfluence di komputer Anda:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 1. Kloning Repository (Opsional)
+Jika Anda mengambil source code melalui Git, lakukan cloning:
+```bash
+git clone https://github.com/hafisc/clipfluence.git
+cd clipfluence
+```
+*(Lewati langkah ini jika Anda sudah berada di dalam folder source code)*
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 2. Instalasi Dependensi PHP (Backend)
+Jalankan perintah Composer di terminal untuk menginstal kerangka kerja Laravel dan package pihak ketiga lainnya:
+```bash
+composer install
+```
 
-## Laravel Sponsors
+### 3. Instalasi Dependensi NPM (Frontend)
+Jalankan NPM untuk menginstal library Javascript, Vite, dan Tailwind CSS:
+```bash
+npm install
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 4. Konfigurasi Environment (`.env`)
+Laravel membutuhkan file `.env` untuk pengaturan dasar (seperti database). Anda perlu menyalinnya dari file contoh:
+```bash
+cp .env.example .env
+```
+*(Pengguna Windows di Command Prompt bisa menggunakan `copy .env.example .env` atau dapat men-copy paste file secara manual).*
 
-### Premium Partners
+Setelah `.env` dibuat, **buka file tersebut** dan sesuaikan baris *Database* (biasanya di baris-baris awal). Contoh penggunaan MySQL dengan Laragon standar:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=clipfluence
+DB_USERNAME=root
+DB_PASSWORD=
+```
+> **Catatan:** Pastikan Anda sudah membuat database kosong bernama `clipfluence` pada HeidiSQL / phpMyAdmin agar aplikasi bisa terkoneksi dengan sukses. Jika ingin langkah yang instan, ubah `DB_CONNECTION=sqlite` dan hapus konfigurasi koneksi DB lainnya.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### 5. Generate Application Key
+Lakukan generate kunci keamanan utama aplikasi Laravel dengan perintah:
+```bash
+php artisan key:generate
+```
 
-## Contributing
+### 6. Migrasi Database
+Buat dan susun tabel-tabel di database (tabel User, dll) menggunakan fitur migrasi Laravel dengan perintah:
+```bash
+php artisan migrate
+```
+*(Bila ada prompt/konfirmasi pembuatan database saat menjalankan migrasi, ketik `yes`)*
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 7. Menjalankan Server Pengembangan (Dev Server)
+Karena project ini menggunakan Vite untuk kompilasi CSS (Tailwind) dan Javascript, Anda perlu menjalankan server backend Laravel dan server frontend Vite secara bersamaan.
 
-## Code of Conduct
+Di Laravel versi 11 ke atas yang menggunakan `concurrently`, cukup jalankan 1 perintah ini saja di terminal:
+```bash
+composer run dev
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+**ATAU (Cara Alternatif):**
+Bila Anda perlu membuka **dua (2)** tab Terminal pada folder project dan menjalankan server secara terpisah:
 
-## Security Vulnerabilities
+- **Terminal 1** (untuk Backend):
+  ```bash
+  php artisan serve
+  ```
+- **Terminal 2** (untuk Frontend):
+  ```bash
+  npm run dev
+  ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 8. Selesai 🎉
+Buka browser dan kunjungi: **http://127.0.0.1:8000** atau **http://localhost:8000**.
+Jika Anda menggunakan fitur Auto Virtual Hosts Laragon, Anda juga bisa langsung mengakses alamat **http://clipfluence.test**.
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Tumpukan Teknologi (Tech Stack)
+- **Framework Utama:** [Laravel 12](https://laravel.com/)
+- **Frontend / Styling:** [Tailwind CSS 4](https://tailwindcss.com/)
+- **Bundler:** [Vite](https://vitejs.dev/)
+- **HTTP Client (AJAX):** [Axios](https://axios-http.com/)
