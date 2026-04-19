@@ -10,16 +10,41 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Super Admin – Akses ke Filament Panel
+        User::updateOrCreate(
+            ['email' => 'admin@cliphub.com'],
+            [
+                'name'     => 'Super Admin',
+                'password' => bcrypt('password'),
+                'role'     => 'admin',
+            ]
+        );
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Kreator / Clipper Demo Account
+        User::updateOrCreate(
+            ['email' => 'kreator@cliphub.com'],
+            [
+                'name'     => 'Tio',
+                'password' => bcrypt('password'),
+                'role'     => 'kreator',
+            ]
+        );
+
+        // Brand / Agensi Demo Account
+        User::updateOrCreate(
+            ['email' => 'brand@cliphub.com'],
+            [
+                'name'     => 'Skincare Brand',
+                'password' => bcrypt('password'),
+                'role'     => 'brand',
+                'balance'  => 10000000
+            ]
+        );
+
+        $this->call([
+            CampaignSeeder::class,
         ]);
     }
 }
