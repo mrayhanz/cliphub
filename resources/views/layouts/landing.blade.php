@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Clipfluence - Platform UGC & Clipper No. 1 di Indonesia</title>
+    <title>ClipHub - Platform UGC & Clipper No. 1 di Indonesia</title>
     
     <!-- Memuat aset CSS & JS Laravel Vite -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])

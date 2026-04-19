@@ -1,0 +1,197 @@
+@startuml
+!theme plain
+hide circle
+skinparam linetype ortho
+
+' Konfigurasi Tampilan
+skinparam EntityBackgroundColor #f8fafc
+skinparam EntityBorderColor #cbd5e1
+skinparam EntityHeaderBackgroundColor #e2e8f0
+
+entity "users" {
+  * id : bigint unsigned <<PK>>
+  --
+  name : varchar(255)
+  email : varchar(255)
+  role : enum('admin', 'kreator', 'brand')
+  balance : bigint
+  bank_name : varchar(255)
+  bank_account : varchar(255)
+  email_verified_at : timestamp
+  password : varchar(255)
+  remember_token : varchar(100)
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+entity "campaigns" {
+  * id : bigint unsigned <<PK>>
+  --
+  user_id : bigint unsigned <<FK>>
+  title : varchar(255)
+  type : varchar(255)
+  slots : int
+  thumbnail : varchar(255)
+  desc : text
+  full_brief : longtext
+  donts : text
+  assets_url : varchar(255)
+  deadline : date
+  video_length : varchar(50)
+  link : varchar(255)
+  platform : varchar(255)
+  budget : bigint
+  price_per_1k : int
+  status : varchar(255)
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+entity "submissions" {
+  * id : bigint unsigned <<PK>>
+  --
+  user_id : bigint unsigned <<FK>>
+  campaign_id : bigint unsigned <<FK>>
+  platform : enum('TikTok', 'Instagram', 'YouTube')
+  views_claimed : int
+  video_url : varchar(255)
+  analytics_proof_path : varchar(255)
+  estimated_reward : decimal(15,2)
+  status : enum('pending', 'approved', 'rejected')
+  rejection_reason : text
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+entity "deposits" {
+  * id : bigint unsigned <<PK>>
+  --
+  user_id : bigint unsigned <<FK>>
+  order_id : varchar(255)
+  amount : bigint
+  status : enum('pending', 'success', 'failed', 'expired')
+  payment_type : varchar(255)
+  snap_token : varchar(255)
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+entity "withdrawals" {
+  * id : bigint unsigned <<PK>>
+  --
+  user_id : bigint unsigned <<FK>>
+  amount : decimal(15,2)
+  bank_name : varchar(255)
+  bank_account : varchar(255)
+  account_name : varchar(255)
+  status : enum('pending', 'completed', 'rejected')
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+entity "clips" {
+  * id : bigint unsigned <<PK>>
+  --
+  user_id : bigint unsigned <<FK>>
+  title : varchar(255)
+  hook : text
+  source_url : varchar(255)
+  video_id : varchar(255)
+  ratio : varchar(255)
+  start_time : int
+  end_time : int
+  duration : varchar(255)
+  has_captions : tinyint(1)
+  transcript : text
+  score : int
+  status : varchar(255)
+  file_path : varchar(255)
+  file_size : bigint unsigned
+  created_at : timestamp
+  updated_at : timestamp
+}
+
+entity "sessions" {
+  * id : varchar(255) <<PK>>
+  --
+  user_id : bigint unsigned <<FK>>
+  ip_address : varchar(45)
+  user_agent : text
+  payload : longtext
+  last_activity : int
+}
+
+entity "password_reset_tokens" {
+  * email : varchar(255) <<PK>>
+  --
+  token : varchar(255)
+  created_at : timestamp
+}
+
+entity "migrations" {
+  * id : int unsigned <<PK>>
+  --
+  migration : varchar(255)
+  batch : int
+}
+
+entity "cache" {
+  * key : varchar(255) <<PK>>
+  --
+  value : mediumtext
+  expiration : int
+}
+
+entity "cache_locks" {
+  * key : varchar(255) <<PK>>
+  --
+  owner : varchar(255)
+  expiration : int
+}
+
+entity "jobs" {
+  * id : bigint unsigned <<PK>>
+  --
+  queue : varchar(255)
+  payload : longtext
+  attempts : tinyint unsigned
+  reserved_at : int unsigned
+  available_at : int unsigned
+  created_at : int unsigned
+}
+
+entity "job_batches" {
+  * id : varchar(255) <<PK>>
+  --
+  name : varchar(255)
+  total_jobs : int
+  pending_jobs : int
+  failed_jobs : int
+  failed_job_ids : longtext
+  options : mediumtext
+  cancelled_at : int
+  created_at : int
+  finished_at : int
+}
+
+entity "failed_jobs" {
+  * id : bigint unsigned <<PK>>
+  --
+  uuid : varchar(255)
+  connection : text
+  queue : text
+  payload : longtext
+  exception : longtext
+  failed_at : timestamp
+}
+
+' Relasi
+users "1" -- "0..*" campaigns
+users "1" -- "0..*" submissions
+users "1" -- "0..*" deposits
+users "1" -- "0..*" withdrawals
+users "1" -- "0..*" clips
+users "1" -- "0..*" sessions
+campaigns "1" -- "0..*" submissions
+
+@enduml
