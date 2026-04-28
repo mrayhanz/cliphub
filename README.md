@@ -53,19 +53,28 @@ Dokumentasi database tersedia di:
 
 ## Prasyarat
 
-Pastikan sudah tersedia:
-- PHP >= 8.2
-- Composer
-- Node.js dan npm
-- MySQL/MariaDB atau database lain yang didukung Laravel
-- `ffmpeg` dan `yt-dlp` untuk fitur AI Auto-Clipper
+Sebelum menginstal dan menjalankan website ini, pastikan sistem Anda telah terinstal:
+- **PHP** >= 8.2
+- **Composer** (untuk dependensi backend PHP)
+- **Node.js** dan **npm** (untuk dependensi frontend JS/CSS)
+- Server Database (MySQL / MariaDB / SQLite / PostgreSQL dll). Penggunaan **Laragon** sangat disarankan jika Anda menggunakan Windows.
 
-Untuk Windows, Laragon direkomendasikan.
+---
 
-## Instalasi Lokal
+## Langkah-Langkah Menjalankan Website (Lokal)
 
-### 1. Install dependency PHP
+Ikuti langkah-langkah di bawah ini untuk mengonfigurasi dan menjalankan project Clipfluence di komputer Anda:
 
+### 1. Kloning Repository (Opsional)
+Jika Anda mengambil source code melalui Git, lakukan cloning:
+```bash
+git clone https://github.com/hafisc/clipfluence.git
+cd clipfluence
+```
+*(Lewati langkah ini jika Anda sudah berada di dalam folder source code)*
+
+### 2. Instalasi Dependensi PHP (Backend)
+Jalankan perintah Composer di terminal untuk menginstal kerangka kerja Laravel dan package pihak ketiga lainnya:
 ```bash
 composer install
 ```
@@ -96,7 +105,7 @@ Contoh konfigurasi MySQL Laragon:
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=web_clipper
+DB_DATABASE=clipfluence
 DB_USERNAME=root
 DB_PASSWORD=
 ```
