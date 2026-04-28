@@ -1,0 +1,221 @@
+@startuml
+!theme plain
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam shadowing false
+
+title ClipHub - Class Diagram
+
+package "Models" {
+  class User {
+    +id: bigint
+    +name: string
+    +email: string
+    +role: enum(admin, kreator, brand)
+    +balance: bigint
+    +bank_name: string?
+    +bank_account: string?
+    +password: string
+    +isAdmin(): bool
+    +isKreator(): bool
+    +isBrand(): bool
+    +campaigns(): HasMany
+    +deposits(): HasMany
+  }
+
+  class Campaign {
+    +id: bigint
+    +user_id: bigint
+    +title: string
+    +type: string
+    +slots: int
+    +thumbnail: string?
+    +desc: text?
+    +full_brief: longtext?
+    +donts: text?
+    +assets_url: string?
+    +deadline: date?
+    +video_length: string?
+    +link: string?
+    +platform: string
+    +budget: bigint
+    +price_per_1k: int
+    +status: string
+    +user(): BelongsTo
+  }
+
+  class Submission {
+    +id: bigint
+    +user_id: bigint
+    +campaign_id: bigint
+    +platform: enum(TikTok, Instagram, YouTube)
+    +views_claimed: int
+    +video_url: string
+    +analytics_proof_path: string
+    +estimated_reward: decimal
+    +status: enum(pending, approved, rejected)
+    +rejection_reason: text?
+    +user(): BelongsTo
+    +campaign(): BelongsTo
+  }
+
+  class Clip {
+    +id: bigint
+    +user_id: bigint
+    +title: string
+    +hook: text?
+    +source_url: string
+    +video_id: string?
+    +ratio: string
+    +has_captions: bool
+    +start_time: int
+    +end_time: int
+    +duration: string?
+    +score: int
+    +status: string
+    +file_path: string?
+    +file_size: bigint?
+    +user(): BelongsTo
+    +getFileUrlAttribute(): string?
+    +getFileSizeHumanAttribute(): string
+    +isDone(): bool
+    +isFailed(): bool
+    +isProcessing(): bool
+  }
+
+  class Deposit {
+    +id: bigint
+    +user_id: bigint
+    +order_id: string
+    +amount: bigint
+    +status: enum(pending, success, failed, expired)
+    +payment_type: string?
+    +snap_token: string?
+    +user(): BelongsTo
+  }
+
+  class Withdrawal {
+    +id: bigint
+    +user_id: bigint
+    +amount: decimal
+    +bank_name: string
+    +bank_account: string
+    +account_name: string
+    +status: enum(pending, completed, rejected)
+    +user(): BelongsTo
+  }
+}
+
+package "Auth" {
+  class LoginController {
+    +showLoginForm()
+    +login(request)
+    #redirectBasedOnRole(user)
+    +logout(request)
+  }
+}
+
+package "Brand Controllers" {
+  class BrandDashboardController {
+    +index()
+  }
+
+  class BrandCampaignController {
+    +index()
+    +create()
+    +store(request)
+  }
+
+  class BrandFinanceController {
+    +__construct()
+    +index()
+    +topup(request)
+    +handleCallbackCallback(request)
+    +webhook(request)
+  }
+}
+
+package "Kreator Controllers" {
+  class KreatorDashboardController {
+    +index()
+  }
+
+  class KreatorCampaignController {
+    -mapCampaignToViewArray(campaign)
+    +index()
+    +show(id)
+  }
+
+  class AIClipperController {
+    +index()
+    +process(request)
+    -getYouTubeTranscript(url)
+    +status(clip)
+  }
+
+  class KreatorFinanceController {
+    +index()
+    +updateBank(request)
+    +withdraw(request)
+  }
+
+  class SubmissionController
+}
+
+package "Middleware" {
+  class IsAdmin {
+    +handle(request, next)
+  }
+
+  class IsBrand {
+    +handle(request, next)
+  }
+
+  class IsKreator {
+    +handle(request, next)
+  }
+}
+
+package "Jobs" {
+  class ProcessVideoClip {
+    +timeout: int
+    +tries: int
+    +clip: Clip
+    +__construct(clip)
+    +handle(): void
+    -findBinary(name): string
+  }
+}
+
+' Model relationships
+User "1" -- "0..*" Campaign : brand owns
+User "1" -- "0..*" Submission : kreator submits
+User "1" -- "0..*" Clip : creates
+User "1" -- "0..*" Deposit : brand topups
+User "1" -- "0..*" Withdrawal : kreator withdraws
+Campaign "1" -- "0..*" Submission : receives
+
+' Controller dependencies
+LoginController ..> User
+BrandDashboardController ..> User
+BrandDashboardController ..> Campaign
+BrandCampaignController ..> Campaign
+BrandCampaignController ..> User
+BrandFinanceController ..> Deposit
+BrandFinanceController ..> User
+KreatorDashboardController ..> Campaign
+KreatorCampaignController ..> Campaign
+AIClipperController ..> Clip
+AIClipperController ..> ProcessVideoClip : dispatches
+KreatorFinanceController ..> Withdrawal
+KreatorFinanceController ..> User
+
+' Middleware role checks
+IsAdmin ..> User : isAdmin()
+IsBrand ..> User : isBrand()
+IsKreator ..> User : isKreator()
+
+' Job dependency
+ProcessVideoClip ..> Clip : updates status/file
+
+@enduml

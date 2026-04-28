@@ -21,15 +21,15 @@
         <div class="flex flex-col gap-5">
 
             {{-- SALDO DEPOSIT CARD --}}
-            <div class="bg-[#111111] border border-violet-500/30 rounded-3xl relative overflow-hidden shadow-[inset_0_0_20px_rgba(139,92,246,0.05),0_10px_40px_rgba(91,33,182,0.15)] p-7">
-                <div class="absolute -right-10 -top-10 w-40 h-40 bg-violet-500/15 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-fuchsia-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="bg-[#111111] border border-emerald-500/30 rounded-3xl relative overflow-hidden shadow-[inset_0_0_20px_rgba(16,185,129,0.05),0_10px_40px_rgba(5,150,105,0.15)] p-7">
+                <div class="absolute -right-10 -top-10 w-40 h-40 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -left-10 -bottom-10 w-40 h-40 bg-green-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
                 <div class="relative z-10">
                     <div class="flex items-center justify-between mb-8">
-                        <span class="text-xs font-bold text-violet-300 uppercase tracking-widest bg-violet-500/10 border border-violet-500/20 px-2.5 py-1 rounded shadow-sm">Saldo Deposit</span>
-                        <div class="w-11 h-11 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
-                            <span class="text-2xl drop-shadow-[0_2px_4px_rgba(139,92,246,0.5)]">💰</span>
+                        <span class="text-xs font-bold text-emerald-300 uppercase tracking-widest bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded shadow-sm">Saldo Deposit</span>
+                        <div class="w-11 h-11 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                            <span class="text-2xl drop-shadow-[0_2px_4px_rgba(16,185,129,0.5)]">💰</span>
                         </div>
                     </div>
 
@@ -40,7 +40,7 @@
                         Tersedia untuk pembayaran kreator
                     </p>
 
-                    <button @click="isModalOpen = true" class="w-full bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white px-6 py-3.5 rounded-2xl text-sm font-extrabold flex items-center justify-center gap-2 transition-all duration-200 shadow-[0_8px_20px_rgba(124,58,237,0.25)] hover:shadow-[0_8px_30px_rgba(124,58,237,0.4)] hover:-translate-y-0.5 cursor-pointer border-none outline-none">
+                    <button @click="isModalOpen = true" class="w-full bg-gradient-to-br from-emerald-600 to-green-600 text-white px-6 py-3.5 rounded-2xl text-sm font-extrabold flex items-center justify-center gap-2 transition-all duration-200 shadow-[0_8px_20px_rgba(5,150,105,0.25)] hover:shadow-[0_8px_30px_rgba(5,150,105,0.4)] hover:-translate-y-0.5 cursor-pointer border-none outline-none">
                         <i data-lucide="plus-circle" class="w-4 h-4"></i> Top-up
                     </button>
                 </div>
@@ -71,7 +71,7 @@
             <div class="flex items-center justify-between pb-4 mb-5 border-b border-white/5">
                 <h3 class="text-sm lg:text-base font-black text-white">Riwayat Transaksi</h3>
                 <div class="flex gap-2">
-                    <button class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-violet-500/10 text-violet-400 border border-violet-500/25">Semua</button>
+                    <button class="px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">Semua</button>
                 </div>
             </div>
 
@@ -123,21 +123,21 @@
             <p class="text-[11px] text-slate-400 mb-6 font-medium">Pilih atau masukkan nominal uang yang ingin diisi ke saldo Anda.</p>
             
             <div class="grid grid-cols-2 gap-2 mb-6">
-                <button type="button" @click="amount = 50000" class="bg-white/[0.03] hover:bg-violet-500/10 border border-white/10 hover:border-violet-500/30 rounded-xl p-3 text-slate-400 hover:text-white font-bold text-xs sm:text-sm transition-all" :class="amount == 50000 ? 'bg-violet-500/20 border-violet-500/50 text-white' : ''">Rp 50.000</button>
-                <button type="button" @click="amount = 100000" class="bg-white/[0.03] hover:bg-violet-500/10 border border-white/10 hover:border-violet-500/30 rounded-xl p-3 text-slate-400 hover:text-white font-bold text-xs sm:text-sm transition-all" :class="amount == 100000 ? 'bg-violet-500/20 border-violet-500/50 text-white' : ''">Rp 100.000</button>
-                <button type="button" @click="amount = 500000" class="bg-white/[0.03] hover:bg-violet-500/10 border border-white/10 hover:border-violet-500/30 rounded-xl p-3 text-slate-400 hover:text-white font-bold text-xs sm:text-sm transition-all" :class="amount == 500000 ? 'bg-violet-500/20 border-violet-500/50 text-white' : ''">Rp 500.000</button>
-                <button type="button" @click="amount = 1000000" class="bg-white/[0.03] hover:bg-violet-500/10 border border-white/10 hover:border-violet-500/30 rounded-xl p-3 text-slate-400 hover:text-white font-bold text-xs sm:text-sm transition-all" :class="amount == 1000000 ? 'bg-violet-500/20 border-violet-500/50 text-white' : ''">Rp 1.000.000</button>
+                <button type="button" @click="amount = 50000" class="bg-white/[0.03] hover:bg-emerald-500/10 border border-white/10 hover:border-emerald-500/30 rounded-xl p-3 text-slate-400 hover:text-white font-bold text-xs sm:text-sm transition-all" :class="amount == 50000 ? 'bg-emerald-500/20 border-emerald-500/50 text-white' : ''">Rp 50.000</button>
+                <button type="button" @click="amount = 100000" class="bg-white/[0.03] hover:bg-emerald-500/10 border border-white/10 hover:border-emerald-500/30 rounded-xl p-3 text-slate-400 hover:text-white font-bold text-xs sm:text-sm transition-all" :class="amount == 100000 ? 'bg-emerald-500/20 border-emerald-500/50 text-white' : ''">Rp 100.000</button>
+                <button type="button" @click="amount = 500000" class="bg-white/[0.03] hover:bg-emerald-500/10 border border-white/10 hover:border-emerald-500/30 rounded-xl p-3 text-slate-400 hover:text-white font-bold text-xs sm:text-sm transition-all" :class="amount == 500000 ? 'bg-emerald-500/20 border-emerald-500/50 text-white' : ''">Rp 500.000</button>
+                <button type="button" @click="amount = 1000000" class="bg-white/[0.03] hover:bg-emerald-500/10 border border-white/10 hover:border-emerald-500/30 rounded-xl p-3 text-slate-400 hover:text-white font-bold text-xs sm:text-sm transition-all" :class="amount == 1000000 ? 'bg-emerald-500/20 border-emerald-500/50 text-white' : ''">Rp 1.000.000</button>
             </div>
 
             <div class="mb-8">
                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Atau Nominal Lainnya</label>
                 <div class="relative">
                     <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold">Rp</span>
-                    <input type="number" x-model="amount" class="w-full bg-black border border-zinc-800 rounded-xl py-3 pl-12 pr-4 text-white text-sm font-bold focus:outline-none focus:border-violet-500/50 transition-colors" placeholder="Minimum 10000" min="10000">
+                    <input type="number" x-model="amount" class="w-full bg-black border border-zinc-800 rounded-xl py-3 pl-12 pr-4 text-white text-sm font-bold focus:outline-none focus:border-emerald-500/50 transition-colors" placeholder="Minimum 10000" min="10000">
                 </div>
             </div>
 
-            <button @click="processPayment()" :disabled="isLoading || amount < 10000" class="w-full bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white px-6 py-3.5 rounded-2xl text-sm font-extrabold flex items-center justify-center gap-2 transition-all duration-200 shadow-[0_8px_20px_rgba(124,58,237,0.25)] hover:shadow-[0_8px_30px_rgba(124,58,237,0.4)] hover:-translate-y-0.5 cursor-pointer border-none outline-none" :class="(isLoading || amount < 10000) ? 'opacity-50 cursor-not-allowed hover:translate-y-0 hover:shadow-none' : ''">
+            <button @click="processPayment()" :disabled="isLoading || amount < 10000" class="w-full bg-gradient-to-br from-emerald-600 to-green-600 text-white px-6 py-3.5 rounded-2xl text-sm font-extrabold flex items-center justify-center gap-2 transition-all duration-200 shadow-[0_8px_20px_rgba(5,150,105,0.25)] hover:shadow-[0_8px_30px_rgba(5,150,105,0.4)] hover:-translate-y-0.5 cursor-pointer border-none outline-none" :class="(isLoading || amount < 10000) ? 'opacity-50 cursor-not-allowed hover:translate-y-0 hover:shadow-none' : ''">
                 <span x-text="isLoading ? 'Memproses...' : 'Lanjutkan Pembayaran'"></span>
             </button>
         </div>

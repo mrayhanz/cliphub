@@ -1,100 +1,252 @@
-# Clipfluence
+# ClipHub
 
-Clipfluence adalah platform berbasis web yang dibangun menggunakan **Laravel 12** dan **TailwindCSS 4**.
+ClipHub adalah aplikasi web berbasis **Laravel 12** dan **Tailwind CSS 4** untuk menghubungkan **Brand** dengan **Kreator** melalui campaign berbasis submission, klaim views, reward, wallet, dan fitur **AI Auto-Clipper**.
+
+## Fitur Utama
+
+### Admin
+- Dashboard operasional.
+- Manajemen pengguna, kreator, dan brand.
+- Manajemen campaign.
+- Review submission kreator.
+- Monitoring transaksi dan escrow.
+- Approval withdrawal kreator.
+- Pengaturan platform sederhana.
+
+### Brand
+- Dashboard brand.
+- Membuat dan melihat campaign.
+- Review submission kreator.
+- Top-up saldo via Midtrans.
+- Monitoring deposit dan escrow campaign.
+- Profil brand dasar.
+
+### Kreator
+- Dashboard kreator.
+- Marketplace campaign.
+- Detail campaign.
+- Klaim views dengan link konten dan bukti analytics.
+- Riwayat submission.
+- Wallet dan withdrawal.
+- AI Auto-Clipper untuk membuat klip vertikal dari URL video.
+
+## Struktur Database
+
+Tabel bisnis utama:
+- `users`
+- `campaigns`
+- `submissions`
+- `clips`
+- `deposits`
+- `withdrawals`
+
+Tabel sistem Laravel:
+- `cache`
+- `jobs`
+- `sessions`
+- `password_reset_tokens`
+
+Dokumentasi database tersedia di:
+- `DATABASE_README.md`
+- `database_diagram.puml`
+- `class_diagram.puml`
 
 ## Prasyarat
 
-Sebelum menginstal dan menjalankan website ini, pastikan sistem Anda telah terinstal:
-- **PHP** >= 8.2
-- **Composer** (untuk dependensi backend PHP)
-- **Node.js** dan **npm** (untuk dependensi frontend JS/CSS)
-- Server Database (MySQL / MariaDB / SQLite / PostgreSQL dll). Penggunaan **Laragon** sangat disarankan jika Anda menggunakan Windows.
+Pastikan sudah tersedia:
+- PHP >= 8.2
+- Composer
+- Node.js dan npm
+- MySQL/MariaDB atau database lain yang didukung Laravel
+- `ffmpeg` dan `yt-dlp` untuk fitur AI Auto-Clipper
 
----
+Untuk Windows, Laragon direkomendasikan.
 
-## Langkah-Langkah Menjalankan Website (Lokal)
+## Instalasi Lokal
 
-Ikuti langkah-langkah di bawah ini untuk mengonfigurasi dan menjalankan project Clipfluence di komputer Anda:
+### 1. Install dependency PHP
 
-### 1. Kloning Repository (Opsional)
-Jika Anda mengambil source code melalui Git, lakukan cloning:
-```bash
-git clone https://github.com/hafisc/clipfluence.git
-cd clipfluence
-```
-*(Lewati langkah ini jika Anda sudah berada di dalam folder source code)*
-
-### 2. Instalasi Dependensi PHP (Backend)
-Jalankan perintah Composer di terminal untuk menginstal kerangka kerja Laravel dan package pihak ketiga lainnya:
 ```bash
 composer install
 ```
 
-### 3. Instalasi Dependensi NPM (Frontend)
-Jalankan NPM untuk menginstal library Javascript, Vite, dan Tailwind CSS:
+### 2. Install dependency frontend
+
 ```bash
 npm install
 ```
 
-### 4. Konfigurasi Environment (`.env`)
-Laravel membutuhkan file `.env` untuk pengaturan dasar (seperti database). Anda perlu menyalinnya dari file contoh:
+### 3. Siapkan file environment
+
+```bash
+copy .env.example .env
+```
+
+Untuk Git Bash/Linux/macOS:
+
 ```bash
 cp .env.example .env
 ```
-*(Pengguna Windows di Command Prompt bisa menggunakan `copy .env.example .env` atau dapat men-copy paste file secara manual).*
 
-Setelah `.env` dibuat, **buka file tersebut** dan sesuaikan baris *Database* (biasanya di baris-baris awal). Contoh penggunaan MySQL dengan Laragon standar:
+### 4. Konfigurasi database
+
+Contoh konfigurasi MySQL Laragon:
+
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=clipfluence
+DB_DATABASE=web_clipper
 DB_USERNAME=root
 DB_PASSWORD=
 ```
-> **Catatan:** Pastikan Anda sudah membuat database kosong bernama `clipfluence` pada HeidiSQL / phpMyAdmin agar aplikasi bisa terkoneksi dengan sukses. Jika ingin langkah yang instan, ubah `DB_CONNECTION=sqlite` dan hapus konfigurasi koneksi DB lainnya.
 
-### 5. Generate Application Key
-Lakukan generate kunci keamanan utama aplikasi Laravel dengan perintah:
+Buat database kosong bernama `cliphub` sebelum menjalankan migration.
+
+### 5. Generate app key
+
 ```bash
 php artisan key:generate
 ```
 
-### 6. Migrasi Database
-Buat dan susun tabel-tabel di database (tabel User, dll) menggunakan fitur migrasi Laravel dengan perintah:
+### 6. Jalankan migration dan seeder
+
+Untuk setup baru:
+
 ```bash
-php artisan migrate
+php artisan migrate --seed
 ```
-*(Bila ada prompt/konfirmasi pembuatan database saat menjalankan migrasi, ketik `yes`)*
 
-### 7. Menjalankan Server Pengembangan (Dev Server)
-Karena project ini menggunakan Vite untuk kompilasi CSS (Tailwind) dan Javascript, Anda perlu menjalankan server backend Laravel dan server frontend Vite secara bersamaan.
+Jika ingin reset total database agar sesuai struktur terbaru:
 
-Di Laravel versi 11 ke atas yang menggunakan `concurrently`, cukup jalankan 1 perintah ini saja di terminal:
+```bash
+php artisan migrate:fresh --seed
+```
+
+Catatan: `migrate:fresh` akan menghapus seluruh data lama.
+
+### 7. Storage link
+
+```bash
+php artisan storage:link
+```
+
+## Konfigurasi Tambahan
+
+### Midtrans
+
+Digunakan untuk top-up saldo brand.
+
+```env
+MIDTRANS_SERVER_KEY=
+MIDTRANS_CLIENT_KEY=
+MIDTRANS_IS_PRODUCTION=false
+MIDTRANS_IS_SANITIZED=true
+MIDTRANS_IS_3DS=true
+```
+
+### AI Auto-Clipper
+
+AI Auto-Clipper menggunakan Groq API, `yt-dlp`, dan `ffmpeg`.
+
+```env
+GROQ_API_KEY=
+YTDLP_BIN_PATH=
+FFMPEG_BIN_PATH=
+YT_COOKIES_PATH=
+```
+
+`YTDLP_BIN_PATH`, `FFMPEG_BIN_PATH`, dan `YT_COOKIES_PATH` bersifat opsional jika binary sudah tersedia di PATH.
+
+## Menjalankan Aplikasi
+
+Cara paling mudah:
+
 ```bash
 composer run dev
 ```
 
-**ATAU (Cara Alternatif):**
-Bila Anda perlu membuka **dua (2)** tab Terminal pada folder project dan menjalankan server secara terpisah:
+Perintah ini menjalankan:
+- Laravel development server
+- Queue listener
+- Log pail
+- Vite dev server
 
-- **Terminal 1** (untuk Backend):
-  ```bash
-  php artisan serve
-  ```
-- **Terminal 2** (untuk Frontend):
-  ```bash
-  npm run dev
-  ```
+Alternatif manual:
 
-### 8. Selesai 🎉
-Buka browser dan kunjungi: **http://127.0.0.1:8000** atau **http://localhost:8000**.
-Jika Anda menggunakan fitur Auto Virtual Hosts Laragon, Anda juga bisa langsung mengakses alamat **http://clipfluence.test**.
+```bash
+php artisan serve
+```
 
----
+```bash
+npm run dev
+```
 
-## Tumpukan Teknologi (Tech Stack)
-- **Framework Utama:** [Laravel 12](https://laravel.com/)
-- **Frontend / Styling:** [Tailwind CSS 4](https://tailwindcss.com/)
-- **Bundler:** [Vite](https://vitejs.dev/)
-- **HTTP Client (AJAX):** [Axios](https://axios-http.com/)
+Untuk proses AI Auto-Clipper dan queue:
+
+```bash
+php artisan queue:listen --tries=1 --timeout=0
+```
+
+## Akun Demo
+
+Seeder membuat akun demo berikut:
+
+| Role | Email | Password |
+| --- | --- | --- |
+| Admin | admin@cliphub.com | password |
+| Kreator | kreator@cliphub.com | password |
+| Brand | brand@cliphub.com | password |
+
+## Route Utama
+
+### Public
+- `/`
+- `/login`
+- `/register`
+
+### Admin
+- `/admin/dashboard`
+- `/admin/users`
+- `/admin/kreators`
+- `/admin/brands`
+- `/admin/campaigns`
+- `/admin/submissions`
+- `/admin/payouts`
+- `/admin/withdrawals`
+- `/admin/settings`
+
+### Brand
+- `/brand/dashboard`
+- `/brand/campaigns`
+- `/brand/campaigns/create`
+- `/brand/submissions`
+- `/brand/finance`
+- `/brand/profile`
+
+### Kreator
+- `/kreator/dashboard`
+- `/kreator/campaigns`
+- `/kreator/submissions`
+- `/kreator/submissions/create`
+- `/kreator/finance`
+- `/kreator/ai-tools`
+
+## Testing
+
+```bash
+php artisan test
+```
+
+## Tech Stack
+
+- Laravel 12
+- PHP 8.2+
+- Tailwind CSS 4
+- Vite
+- Axios
+- Midtrans PHP SDK
+- Groq API
+- yt-dlp
+- ffmpeg
+

@@ -8,7 +8,7 @@ use App\Models\Clip;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
-class AIToolController extends Controller
+class AIClipperController extends Controller
 {
     /**
      * Tampilkan halaman AI Auto-Clipper beserta riwayat klip user
@@ -40,7 +40,7 @@ class AIToolController extends Controller
             'status'   => $c->status,
         ]);
 
-        return view('kreator.ai_tools.index', compact('doneClips', 'pendingClips'));
+        return view('kreator.ai_clipper.index', compact('doneClips', 'pendingClips'));
     }
 
     /**

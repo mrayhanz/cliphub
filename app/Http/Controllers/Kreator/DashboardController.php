@@ -10,18 +10,6 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // Status Pekerjaan (Dummy due to missing submissions table currently)
-        $jobs = [
-            [
-                'campaign' => 'Belum Ada Pekerjaan',
-                'views'    => '0',
-                'status'   => 'Empty',
-                'color'    => 'emerald',
-                'icon'     => 'clock',
-            ]
-        ];
-
-        // Campaign Rekomendasi (from DB)
         $campaignsData = Campaign::with('user')
             ->where('status', 'active')
             ->inRandomOrder()
@@ -60,15 +48,9 @@ class DashboardController extends Controller
         $user = auth()->user();
         $stats = [
             'active_campaigns' => Campaign::where('status', 'active')->count(),
-            'total_pendapatan' => collect($jobs)->where('status', 'Approved')->sum('revenue') + $user->balance, // Simulasi, idealnya query dari submissions table
             'saldo_tersedia'   => $user->balance,
-            'dalam_review'     => collect($jobs)->where('status', 'Pending Review')->sum('revenue'), // Simulasi
-            'total_views'      => collect($jobs)->where('status', 'Approved')->sum('views'), // Simulasi
-            'videos_approved'  => collect($jobs)->where('status', 'Approved')->count(),
-            'success_rate'     => collect($jobs)->count() > 0 ? (collect($jobs)->where('status', 'Approved')->count() / count($jobs)) * 100 : 0,
-            'revenue_growth'   => 0, // Default 0% selama belum ada tabel tracking pendapatan per hari/bulan
         ];
 
-        return view('kreator.dashboard.index', compact('jobs', 'recs', 'stats'));
+        return view('kreator.dashboard.index', compact('recs', 'stats'));
     }
 }
