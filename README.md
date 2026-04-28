@@ -207,55 +207,10 @@ Seeder membuat akun demo berikut:
 | Kreator | kreator@cliphub.com | password |
 | Brand | brand@cliphub.com | password |
 
-## Route Utama
-
-### Public
-- `/`
-- `/login`
-- `/register`
-
-### Admin
-- `/admin/dashboard`
-- `/admin/users`
-- `/admin/kreators`
-- `/admin/brands`
-- `/admin/campaigns`
-- `/admin/submissions`
-- `/admin/payouts`
-- `/admin/withdrawals`
-- `/admin/settings`
-
-### Brand
-- `/brand/dashboard`
-- `/brand/campaigns`
-- `/brand/campaigns/create`
-- `/brand/submissions`
-- `/brand/finance`
-- `/brand/profile`
-
-### Kreator
-- `/kreator/dashboard`
-- `/kreator/campaigns`
-- `/kreator/submissions`
-- `/kreator/submissions/create`
-- `/kreator/finance`
-- `/kreator/ai-tools`
-
 ## Testing
 
 ```bash
 php artisan test
 ```
 
-## Tech Stack
-
-- Laravel 12
-- PHP 8.2+
-- Tailwind CSS 4
-- Vite
-- Axios
-- Midtrans PHP SDK
-- Groq API
-- yt-dlp
-- ffmpeg
 
