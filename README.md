@@ -69,7 +69,7 @@ Ikuti langkah-langkah di bawah ini untuk mengonfigurasi dan menjalankan project 
 Jika Anda mengambil source code melalui Git, lakukan cloning:
 ```bash
 git clone https://github.com/hafisc/clipfluence.git
-cd clipfluence
+cd cliphub
 ```
 *(Lewati langkah ini jika Anda sudah berada di dalam folder source code)*
 
@@ -105,7 +105,7 @@ Contoh konfigurasi MySQL Laragon:
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=clipfluence
+DB_DATABASE=cliphub
 DB_USERNAME=root
 DB_PASSWORD=
 ```
