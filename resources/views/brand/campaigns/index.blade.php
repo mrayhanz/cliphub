@@ -7,7 +7,7 @@
 
     {{-- FLASH MESSAGES --}}
     @if (session('success'))
-        <div class="mb-6 p-4 rounded-xl bg-violet-600/10 border border-violet-500/30 text-violet-400 font-bold text-sm flex items-center gap-3">
+        <div class="mb-6 p-4 rounded-xl bg-emerald-600/10 border border-emerald-500/30 text-emerald-400 font-bold text-sm flex items-center gap-3">
             <i data-lucide="check-circle" class="w-5 h-5"></i>
             {{ session('success') }}
         </div>
@@ -16,26 +16,26 @@
     {{-- FILTER & SEARCH BAR --}}
     <div class="bg-[#0f0f0f] rounded-2xl p-3 border border-neutral-800 flex justify-between items-center flex-wrap gap-4 mb-8">
         <div class="flex gap-2 overflow-x-auto [&::-webkit-scrollbar]:hidden flex-1">
-            <a href="#" class="px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 whitespace-nowrap bg-violet-500/10 text-violet-400 border border-violet-500/25">Semua</a>
+            <a href="#" class="px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 whitespace-nowrap bg-emerald-500/10 text-emerald-400 border border-emerald-500/25">Semua</a>
             <a href="#" class="px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 whitespace-nowrap bg-transparent text-zinc-500 hover:text-zinc-100 hover:bg-white/5">🚀 Aktif</a>
             <a href="#" class="px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 whitespace-nowrap bg-transparent text-zinc-500 hover:text-zinc-100 hover:bg-white/5">✅ Selesai</a>
             <a href="#" class="px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 whitespace-nowrap bg-transparent text-zinc-500 hover:text-zinc-100 hover:bg-white/5">📝 Draft</a>
         </div>
         <div class="relative w-full sm:w-auto">
             <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500"></i>
-            <input type="text" placeholder="Cari campaign..." class="bg-black border border-zinc-800 text-sm font-semibold text-white rounded-2xl py-3 pr-4 pl-10 outline-none transition-colors duration-200 w-full sm:w-[250px] focus:border-violet-400 focus:ring-4 focus:ring-violet-500/15">
+            <input type="text" placeholder="Cari campaign..." class="bg-black border border-zinc-800 text-sm font-semibold text-white rounded-2xl py-3 pr-4 pl-10 outline-none transition-colors duration-200 w-full sm:w-[250px] focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/15">
         </div>
     </div>
 
     @if(empty($campaigns) || count($campaigns) === 0)
         <div class="w-full flex flex-col items-center justify-center py-24 px-6 border border-dashed border-neutral-800 rounded-3xl bg-[#111111]/30">
-            <div class="w-20 h-20 bg-neutral-900 border border-neutral-800 rounded-full flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(139,92,246,0.15)] relative">
-                <div class="absolute inset-0 rounded-full bg-violet-500/20 blur-xl pointer-events-none"></div>
-                <i data-lucide="megaphone" class="w-8 h-8 text-violet-400 relative z-10"></i>
+            <div class="w-20 h-20 bg-neutral-900 border border-neutral-800 rounded-full flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(16,185,129,0.15)] relative">
+                <div class="absolute inset-0 rounded-full bg-emerald-500/20 blur-xl pointer-events-none"></div>
+                <i data-lucide="megaphone" class="w-8 h-8 text-emerald-400 relative z-10"></i>
             </div>
             <h3 class="text-xl font-black text-white mb-2">Belum Ada Campaign</h3>
             <p class="text-sm text-slate-500 mb-8 max-w-sm text-center leading-relaxed">Anda belum memiliki campaign aktif. Mulai buat campaign pertama Anda untuk menjangkau kreator terbaik.</p>
-            <a href="{{ route('brand.campaigns.create') }}" class="bg-gradient-to-br from-violet-600 to-fuchsia-600 text-white px-6 py-3 rounded-2xl text-sm font-extrabold inline-flex items-center gap-2 transition-all duration-200 shadow-[0_8px_20px_rgba(124,58,237,0.25)] active:scale-95">
+            <a href="{{ route('brand.campaigns.create') }}" class="bg-gradient-to-br from-emerald-600 to-green-600 text-white px-6 py-3 rounded-2xl text-sm font-extrabold inline-flex items-center gap-2 transition-all duration-200 shadow-[0_8px_20px_rgba(5,150,105,0.25)] active:scale-95">
                 <i data-lucide="plus" class="w-4 h-4"></i> Buat Campaign Sekarang
             </a>
         </div>
@@ -52,8 +52,8 @@
             $status = strtolower($c->status ?? 'draft');
             if ($status === 'active') {
                 $statusColor = 'text-green-400';
-                $progressClass = 'bg-gradient-to-r from-violet-600 to-fuchsia-600 shadow-[0_0_10px_rgba(192,38,211,0.5)]';
-                $glowEffect = '<div class="absolute -right-10 top-20 w-32 h-32 bg-violet-600/10 rounded-full blur-2xl pointer-events-none group-hover:bg-fuchsia-600/20 transition-colors duration-500"></div>';
+                $progressClass = 'bg-gradient-to-r from-emerald-600 to-green-600 shadow-[0_0_10px_rgba(5,150,105,0.5)]';
+                $glowEffect = '<div class="absolute -right-10 top-20 w-32 h-32 bg-emerald-600/10 rounded-full blur-2xl pointer-events-none group-hover:bg-green-600/20 transition-colors duration-500"></div>';
             } elseif ($status === 'completed') {
                 $statusColor = 'text-slate-300';
                 $progressClass = 'bg-gradient-to-r from-zinc-700 to-zinc-500';
@@ -64,11 +64,10 @@
                 $glowEffect = '';
             }
 
-            // Thumbnail fallback
-            $thumbUrl = $c->thumbnail ? asset('storage/' . $c->thumbnail) : asset('images/brand/campaign-placeholder.png');
+            $thumbUrl = $c->thumbnail_url;
         @endphp
         
-        <div class="bg-neutral-900 border border-neutral-800 rounded-2xl relative overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:border-violet-900 hover:shadow-[0_10px_40px_rgba(91,33,182,0.15)] group flex flex-col {{ $status === 'draft' ? 'opacity-70 grayscale-[50%]' : '' }}">
+        <div class="bg-neutral-900 border border-neutral-800 rounded-2xl relative overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:border-emerald-900 hover:shadow-[0_10px_40px_rgba(5,150,105,0.15)] group flex flex-col {{ $status === 'draft' ? 'opacity-70 grayscale-[50%]' : '' }}">
             {!! $glowEffect !!}
 
             {{-- THUMBNAIL IMAGE --}}
@@ -94,15 +93,15 @@
 
             <div class="px-5 pb-5 pt-2 flex-1 relative z-10 flex flex-col">
                 {{-- Title --}}
-                <h3 class="text-lg font-black text-white mb-3.5 leading-tight group-hover:text-violet-400 transition-colors">{{ $c->title }}</h3>
+                <h3 class="text-lg font-black text-white mb-3.5 leading-tight group-hover:text-emerald-400 transition-colors">{{ $c->title }}</h3>
                 
                 {{-- Quick Metrics Row --}}
                 <div class="flex items-center gap-2 text-xs text-slate-400 font-bold mb-5">
                     <span class="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.03] border border-white/5">
-                        <i data-lucide="video" class="w-4 h-4 text-violet-400"></i> 0 Klip
+                        <i data-lucide="video" class="w-4 h-4 text-emerald-400"></i> 0 Klip
                     </span>
                     <span class="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.03] border border-white/5">
-                        <i data-lucide="eye" class="w-4 h-4 text-fuchsia-400"></i> 0
+                        <i data-lucide="eye" class="w-4 h-4 text-green-400"></i> 0
                     </span>
                 </div>
 
@@ -113,7 +112,7 @@
                             <p class="text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-0.5">Anggaran Terpakai</p>
                             <p class="text-xs font-black text-white">Rp 0 <span class="text-[10px] text-slate-500 font-semibold">/ Rp {{ number_format($budgetValue, 0, ',', '.') }}</span></p>
                         </div>
-                        <span class="text-[10px] font-black text-violet-400">{{ number_format($progressPercent, 0) }}%</span>
+                        <span class="text-[10px] font-black text-emerald-400">{{ number_format($progressPercent, 0) }}%</span>
                     </div>
                     <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden relative mt-3">
                         <div class="absolute left-0 top-0 h-full rounded-full {{ $progressClass }}" style="width: {{ $progressPercent }}%;"></div>
@@ -124,10 +123,10 @@
             {{-- Footer Actions --}}
             <div class="px-5 py-4 border-t border-white/5 bg-white/[0.01] flex justify-between items-center relative z-10">
                 <button class="text-[11px] font-bold text-slate-400 hover:text-white transition-colors flex items-center gap-1.5">
-                    <i data-lucide="settings" class="w-3.5 h-3.5"></i> Setelan
+                    <i data-lucide="eye" class="w-3.5 h-3.5"></i> Detail
                 </button>
-                <a href="{{ route('brand.submissions') }}" class="text-[11px] font-black {{ $status === 'active' ? 'text-violet-400 hover:text-fuchsia-400' : 'text-slate-400 hover:text-white' }} transition-colors flex items-center gap-1.5 px-4 py-2 rounded-lg {{ $status === 'active' ? 'bg-violet-500/10 hover:bg-violet-500/20' : 'bg-white/5 hover:bg-white/10' }}">
-                    Review UGC <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                <a href="{{ route('brand.submissions') }}" class="text-[11px] font-black {{ $status === 'active' ? 'text-emerald-400 hover:text-green-400' : 'text-slate-400 hover:text-white' }} transition-colors flex items-center gap-1.5 px-4 py-2 rounded-lg {{ $status === 'active' ? 'bg-emerald-500/10 hover:bg-emerald-500/20' : 'bg-white/5 hover:bg-white/10' }}">
+                    Review Submission <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
                 </a>
             </div>
         </div>

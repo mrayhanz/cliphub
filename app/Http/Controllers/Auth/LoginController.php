@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -35,6 +36,26 @@ class LoginController extends Controller
         return back()->withErrors([
             'email' => 'Email atau kata sandi yang Anda masukkan tidak cocok.',
         ])->onlyInput('email');
+    }
+
+    /**
+     * Handle a new user registration request.
+     */
+    public function register(Request $request)
+    {
+        $validated = $request->validate([
+            'role'     => ['required', 'in:kreator,brand'],
+            'name'     => ['required', 'string', 'max:255'],
+            'email'    => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'confirmed', 'min:8'],
+        ]);
+
+        $user = User::create($validated);
+
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        return $this->redirectBasedOnRole($user);
     }
 
     /**

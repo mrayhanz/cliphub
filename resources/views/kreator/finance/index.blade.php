@@ -25,7 +25,7 @@
             <h1 class="text-2xl lg:text-3xl font-black text-white tracking-tight mb-2">My Wallet</h1>
             <p class="text-sm text-slate-400">Atur penghasilan, tarik dana komisi, dan kelola rekening kamu.</p>
         </div>
-        <button class="flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-bold text-white transition-all hover:scale-[1.02] active:scale-95 bg-gradient-to-br from-violet-600 to-fuchsia-500 shadow-[0_8px_24px_rgba(139,92,246,0.35)]" 
+        <button class="flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-bold text-white transition-all hover:scale-[1.02] active:scale-95 bg-gradient-to-br from-emerald-600 to-green-500 shadow-[0_8px_24px_rgba(16,185,129,0.35)]" 
                 onclick="document.getElementById('wd_modal').classList.remove('hidden')">
             <i data-lucide="arrow-right-left" class="w-4 h-4"></i>
             Tarik Dana Sekarang
@@ -36,10 +36,10 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
         
         {{-- Card 1: Saldo Utama --}}
-        <div class="bg-[#0a0a0a] rounded-[1.5rem] p-6 relative overflow-hidden flex flex-col min-h-[160px] transition-all duration-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)] hover:-translate-y-0.5 hover:shadow-[inset_0_0_0_1px_rgba(139,92,246,0.2),_0_8px_30px_rgba(0,0,0,0.5)] group before:absolute before:inset-x-0 before:top-0 before:h-[1.5px] before:bg-gradient-to-r before:from-transparent before:via-violet-500/50 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300">
+        <div class="bg-[#0a0a0a] rounded-[1.5rem] p-6 relative overflow-hidden flex flex-col min-h-[160px] transition-all duration-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)] hover:-translate-y-0.5 hover:shadow-[inset_0_0_0_1px_rgba(16,185,129,0.2),_0_8px_30px_rgba(0,0,0,0.5)] group before:absolute before:inset-x-0 before:top-0 before:h-[1.5px] before:bg-gradient-to-r before:from-transparent before:via-emerald-500/50 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300">
             <div class="flex items-start justify-between">
-                <div class="w-[44px] h-[44px] rounded-[1.25rem] flex items-center justify-center mb-5 bg-violet-500/10 text-violet-400 shadow-[inset_0_0_0_1px_rgba(139,92,246,0.2)]">
-                    <span class="text-xl lg:text-2xl drop-shadow-[0_2px_4px_rgba(139,92,246,0.4)]">💰</span>
+                <div class="w-[44px] h-[44px] rounded-[1.25rem] flex items-center justify-center mb-5 bg-emerald-500/10 text-emerald-400 shadow-[inset_0_0_0_1px_rgba(16,185,129,0.2)]">
+                    <span class="text-xl lg:text-2xl drop-shadow-[0_2px_4px_rgba(16,185,129,0.4)]">💰</span>
                 </div>
                 <span class="px-2.5 py-1 rounded-md text-[9px] font-black uppercase tracking-widest text-emerald-400 bg-emerald-500/10 shadow-[inset_0_0_0_1px_rgba(16,185,129,0.25)]">
                     Siap Tarik
@@ -54,7 +54,7 @@
         </div>
 
         {{-- Card 2: Escrow / Pending --}}
-        <div class="bg-[#0a0a0a] rounded-[1.5rem] p-6 relative overflow-hidden flex flex-col min-h-[160px] transition-all duration-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)] hover:-translate-y-0.5 hover:shadow-[inset_0_0_0_1px_rgba(139,92,246,0.2),_0_8px_30px_rgba(0,0,0,0.5)] group before:absolute before:inset-x-0 before:top-0 before:h-[1.5px] before:bg-gradient-to-r before:from-transparent before:via-violet-500/50 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300">
+        <div class="bg-[#0a0a0a] rounded-[1.5rem] p-6 relative overflow-hidden flex flex-col min-h-[160px] transition-all duration-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)] hover:-translate-y-0.5 hover:shadow-[inset_0_0_0_1px_rgba(16,185,129,0.2),_0_8px_30px_rgba(0,0,0,0.5)] group before:absolute before:inset-x-0 before:top-0 before:h-[1.5px] before:bg-gradient-to-r before:from-transparent before:via-emerald-500/50 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300">
             <div class="flex items-start justify-between">
                 <div class="w-[44px] h-[44px] rounded-[1.25rem] flex items-center justify-center mb-5 bg-amber-500/10 text-amber-400 shadow-[inset_0_0_0_1px_rgba(245,158,11,0.2)]">
                     <span class="text-xl lg:text-2xl drop-shadow-[0_2px_4px_rgba(245,158,11,0.4)]">⏳</span>
@@ -72,7 +72,7 @@
         </div>
 
         {{-- Card 3: Rekening --}}
-        <div class="bg-[#0a0a0a] rounded-[1.5rem] p-6 relative overflow-hidden flex flex-col min-h-[160px] transition-all duration-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)] hover:-translate-y-0.5 hover:shadow-[inset_0_0_0_1px_rgba(139,92,246,0.2),_0_8px_30px_rgba(0,0,0,0.5)] group before:absolute before:inset-x-0 before:top-0 before:h-[1.5px] before:bg-gradient-to-r before:from-transparent before:via-violet-500/50 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300">
+        <div class="bg-[#0a0a0a] rounded-[1.5rem] p-6 relative overflow-hidden flex flex-col min-h-[160px] transition-all duration-200 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)] hover:-translate-y-0.5 hover:shadow-[inset_0_0_0_1px_rgba(16,185,129,0.2),_0_8px_30px_rgba(0,0,0,0.5)] group before:absolute before:inset-x-0 before:top-0 before:h-[1.5px] before:bg-gradient-to-r before:from-transparent before:via-emerald-500/50 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300">
             <div class="flex items-start justify-between">
                 <div class="w-[44px] h-[44px] rounded-[1.25rem] flex items-center justify-center mb-5 bg-sky-500/10 text-sky-400 shadow-[inset_0_0_0_1px_rgba(56,189,248,0.2)]">
                     <span class="text-xl lg:text-2xl drop-shadow-[0_2px_4px_rgba(59,130,246,0.4)]">🏦</span>
@@ -169,11 +169,11 @@
                 <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-2">Nominal Penarikan (Rp)</label>
                 <div class="relative">
                     <span class="absolute left-4 top-1/2 -translate-y-1/2 font-black text-slate-500">Rp</span>
-                    <input type="number" name="amount" class="w-full bg-black border-none text-[1.5rem] font-extrabold shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] text-white rounded-2xl pl-12 pr-5 py-4 outline-none transition-shadow duration-200 focus:shadow-[inset_0_0_0_1.5px_rgba(139,92,246,0.6),_0_0_0_4px_rgba(139,92,246,0.1)]" value="{{ auth()->user()->balance }}" max="{{ auth()->user()->balance }}" min="50000" placeholder="0">
+                    <input type="number" name="amount" class="w-full bg-black border-none text-[1.5rem] font-extrabold shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] text-white rounded-2xl pl-12 pr-5 py-4 outline-none transition-shadow duration-200 focus:shadow-[inset_0_0_0_1.5px_rgba(16,185,129,0.6),_0_0_0_4px_rgba(16,185,129,0.1)]" value="{{ auth()->user()->balance }}" max="{{ auth()->user()->balance }}" min="50000" placeholder="0">
                 </div>
                 <div class="flex items-center justify-between mt-2 px-1 text-[11px]">
                     <span class="text-slate-500 font-medium">Saldo Maksimal</span>
-                    <span class="font-bold text-violet-400">Rp {{ number_format(auth()->user()->balance, 0, ',', '.') }}</span>
+                    <span class="font-bold text-emerald-400">Rp {{ number_format(auth()->user()->balance, 0, ',', '.') }}</span>
                 </div>
             </div>
 
@@ -200,7 +200,7 @@
             </div>
 
             {{-- Action Button --}}
-            <button type="submit" class="w-full py-4 text-white text-sm font-black rounded-xl transition-all shadow-[0_8px_20px_rgba(139,92,246,0.3)] hover:shadow-[0_8px_25px_rgba(139,92,246,0.45)] hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 bg-gradient-to-br from-violet-600 to-fuchsia-500">
+            <button type="submit" class="w-full py-4 text-white text-sm font-black rounded-xl transition-all shadow-[0_8px_20px_rgba(16,185,129,0.3)] hover:shadow-[0_8px_25px_rgba(16,185,129,0.45)] hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 bg-gradient-to-br from-emerald-600 to-green-500">
                 <i data-lucide="lock" class="w-4 h-4"></i> Konfirmasi Penarikan
             </button>
         </form>
@@ -225,7 +225,7 @@
             <div class="space-y-4 mb-6">
                 <div>
                     <label class="block text-[11px] font-bold text-slate-400 mb-1.5">Pilih Bank / E-Wallet</label>
-                    <select name="bank_name" id="inp_bank_name" required class="w-full bg-black border-none text-sm font-semibold shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] text-white rounded-xl px-4 py-3 outline-none focus:shadow-[inset_0_0_0_1.5px_rgba(139,92,246,0.6)] appearance-none cursor-pointer">
+                    <select name="bank_name" id="inp_bank_name" required class="w-full bg-black border-none text-sm font-semibold shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] text-white rounded-xl px-4 py-3 outline-none focus:shadow-[inset_0_0_0_1.5px_rgba(16,185,129,0.6)] appearance-none cursor-pointer">
                         <option value="BCA" {{ auth()->user()->bank_name == 'BCA' ? 'selected' : '' }}>Bank BCA</option>
                         <option value="BRI" {{ auth()->user()->bank_name == 'BRI' ? 'selected' : '' }}>Bank BRI</option>
                         <option value="BNI" {{ auth()->user()->bank_name == 'BNI' ? 'selected' : '' }}>Bank BNI</option>
@@ -238,7 +238,7 @@
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-slate-400 mb-1.5">Nomor Rekening / HP</label>
-                    <input type="number" name="bank_account" id="inp_bank_acc" value="{{ auth()->user()->bank_account }}" placeholder="Misal: 081234..." required class="w-full bg-black border-none text-sm font-semibold shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] text-white rounded-xl px-4 py-3 outline-none focus:shadow-[inset_0_0_0_1.5px_rgba(139,92,246,0.6)]">
+                    <input type="number" name="bank_account" id="inp_bank_acc" value="{{ auth()->user()->bank_account }}" placeholder="Misal: 081234..." required class="w-full bg-black border-none text-sm font-semibold shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] text-white rounded-xl px-4 py-3 outline-none focus:shadow-[inset_0_0_0_1.5px_rgba(16,185,129,0.6)]">
                 </div>
                 <div>
                     <label class="block text-[11px] font-bold text-slate-400 mb-1.5">Nama Pemilik Akun</label>
@@ -246,7 +246,7 @@
                     <p class="text-[9px] text-slate-500 mt-2">Nama pemilik akun didapat dari pencocokan KTP identitas dan tidak bisa diubah.</p>
                 </div>
             </div>
-            <button type="submit" class="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-[0_4px_12px_rgba(139,92,246,0.3)] transition-all">
+            <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-[0_4px_12px_rgba(16,185,129,0.3)] transition-all">
                 Simpan Perubahan
             </button>
         </form>

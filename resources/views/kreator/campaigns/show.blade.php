@@ -39,7 +39,7 @@
                                 {{ $campaign['brand'] }}
                             </span>
                             <span class="w-1 h-1 rounded-full bg-slate-600 hidden md:block"></span>
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[0.7rem] font-extrabold uppercase tracking-wider bg-violet-500/15 text-violet-300 border border-violet-500/30">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-md text-[0.7rem] font-extrabold uppercase tracking-wider bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
                                 <i data-lucide="{{ $campaign['type'] == 'clip' ? 'scissors' : 'video' }}" class="w-3.5 h-3.5"></i>
                                 {{ strtoupper($campaign['type']) }}
                             </span>
@@ -52,7 +52,7 @@
                 
                 <div class="text-left lg:text-right bg-neutral-900/50 p-4 rounded-xl border border-white/5 shrink-0 w-full lg:w-auto">
                     <p class="text-[0.7rem] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Rate Komisi</p>
-                    <p class="text-2xl font-black text-violet-400 flex items-baseline gap-1 lg:justify-end">
+                    <p class="text-2xl font-black text-emerald-400 flex items-baseline gap-1 lg:justify-end">
                         {{ $campaign['rate'] }} <span class="text-sm text-slate-500 font-bold">/ 1K Views</span>
                     </p>
                 </div>
@@ -68,7 +68,7 @@
                 {{-- Tugas & Cara Kerja --}}
                 <div class="bg-[#121212] border border-white/5 rounded-[1.5rem] p-6 md:p-8 shadow-lg">
                     <h3 class="text-lg font-black text-white flex items-center gap-3 mb-6">
-                        <div class="w-8 h-8 rounded-lg bg-violet-500/20 flex items-center justify-center text-violet-400">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400">
                             <i data-lucide="briefcase" class="w-4 h-4"></i>
                         </div>
                         Tugas & Cara Kerja
@@ -100,22 +100,22 @@
                 {{-- Full Brief --}}
                 <div class="bg-[#121212] border border-white/5 rounded-[1.5rem] p-6 md:p-8 shadow-lg">
                     <h3 class="text-lg font-black text-white flex items-center gap-3 mb-6">
-                        <div class="w-8 h-8 rounded-lg bg-violet-500/20 flex items-center justify-center text-violet-400">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400">
                             <i data-lucide="file-text" class="w-4 h-4"></i>
                         </div>
                         Isi Konten Harus Begini
                     </h3>
                     <div class="text-slate-300 text-sm leading-relaxed whitespace-pre-line bg-neutral-900/40 p-5 rounded-xl border border-white/5">{{ $campaign['full_brief'] }}</div>
 
-                    <div class="mt-6 p-5 rounded-xl bg-violet-900/10 border border-violet-500/20 flex flex-col sm:flex-row sm:items-center gap-4">
-                        <div class="w-12 h-12 rounded-xl bg-violet-500/20 flex items-center justify-center shrink-0 hidden sm:flex">
-                            <i data-lucide="folder-open" class="w-6 h-6 text-violet-400"></i>
+                    <div class="mt-6 p-5 rounded-xl bg-emerald-900/10 border border-emerald-500/20 flex flex-col sm:flex-row sm:items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center shrink-0 hidden sm:flex">
+                            <i data-lucide="folder-open" class="w-6 h-6 text-emerald-400"></i>
                         </div>
                         <div class="flex-grow">
                             <h4 class="text-white font-bold text-sm">Ambil Bahan Di Sini</h4>
                             <p class="text-xs text-slate-400 mt-0.5">Google Drive Folder (Video & Script)</p>
                         </div>
-                        <a href="#" class="shrink-0 bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold px-5 py-3 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-lg shadow-violet-500/20">
+                        <a href="#" class="shrink-0 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-5 py-3 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
                             Buka Link <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
                         </a>
                     </div>
@@ -158,7 +158,7 @@
                 {{-- Info Detail --}}
                 <div>
                     <h3 class="text-md font-black text-white flex items-center gap-2 mb-6">
-                        <i data-lucide="info" class="w-4 h-4 text-violet-500"></i> Info & Status
+                        <i data-lucide="info" class="w-4 h-4 text-emerald-500"></i> Info & Status
                     </h3>
                     <div class="space-y-6">
                         <div class="flex flex-col gap-1.5">
@@ -195,7 +195,7 @@
                     </div>
                     
                     <template x-if="!applied">
-                        <button @click="applied = true" class="w-full bg-violet-600 hover:bg-violet-500 text-white font-black py-4 px-6 rounded-[1rem] transition-all shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:shadow-[0_0_30px_rgba(139,92,246,0.5)] hover:-translate-y-0.5 flex justify-center items-center gap-2 group">
+                        <button @click="applied = true" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-4 px-6 rounded-[1rem] transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:-translate-y-0.5 flex justify-center items-center gap-2 group">
                             Gabung Campaign 
                             <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
                         </button>
