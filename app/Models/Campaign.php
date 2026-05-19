@@ -34,4 +34,9 @@ class Campaign extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function submissions()
+    {
+        return $this->hasMany(Submission::class);
+    }
 }
