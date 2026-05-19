@@ -79,10 +79,19 @@ Route::middleware(['auth', \App\Http\Middleware\IsBrand::class])->prefix('brand'
     Route::get('/campaigns', [\App\Http\Controllers\Brand\CampaignController::class, 'index'])->name('campaigns');
     Route::get('/campaigns/create', [\App\Http\Controllers\Brand\CampaignController::class, 'create'])->name('campaigns.create');
     Route::post('/campaigns', [\App\Http\Controllers\Brand\CampaignController::class, 'store'])->name('campaigns.store');
+    Route::put('/campaigns/{campaign}/activate', [\App\Http\Controllers\Brand\CampaignController::class, 'activate'])->name('campaigns.activate');
+    Route::put('/campaigns/{campaign}/cancel', [\App\Http\Controllers\Brand\CampaignController::class, 'cancel'])->name('campaigns.cancel');
+    Route::put('/campaigns/{campaign}/complete', [\App\Http\Controllers\Brand\CampaignController::class, 'complete'])->name('campaigns.complete');
+    Route::get('/campaigns/{campaign}', [\App\Http\Controllers\Brand\CampaignController::class, 'show'])->name('campaigns.show');
     
-    Route::get('/submissions', fn() => view('brand.submissions.index'))->name('submissions');
+    Route::get('/submissions', [\App\Http\Controllers\Brand\SubmissionController::class, 'index'])->name('submissions');
+    Route::get('/submissions/{submission}', [\App\Http\Controllers\Brand\SubmissionController::class, 'show'])->name('submissions.show');
+    Route::post('/submissions/{submission}/approve', [\App\Http\Controllers\Brand\SubmissionController::class, 'approve'])->name('submissions.approve');
+    Route::post('/submissions/{submission}/reject', [\App\Http\Controllers\Brand\SubmissionController::class, 'reject'])->name('submissions.reject');
     Route::get('/finance', [\App\Http\Controllers\Brand\FinanceController::class, 'index'])->name('finance');
     Route::post('/finance/topup', [\App\Http\Controllers\Brand\FinanceController::class, 'topup'])->name('finance.topup');
     Route::post('/finance/topup/callback', [\App\Http\Controllers\Brand\FinanceController::class, 'handleCallbackCallback'])->name('finance.topup.callback');
-    Route::get('/profile', fn() => view('brand.profile.index'))->name('profile');
+    Route::get('/profile', [\App\Http\Controllers\Brand\ProfileController::class, 'index'])->name('profile');
+    Route::put('/profile', [\App\Http\Controllers\Brand\ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [\App\Http\Controllers\Brand\ProfileController::class, 'updatePassword'])->name('profile.password');
 });

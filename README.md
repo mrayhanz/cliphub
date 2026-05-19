@@ -5,6 +5,7 @@ ClipHub adalah aplikasi web berbasis **Laravel 12** dan **Tailwind CSS 4** untuk
 ## Fitur Utama
 
 ### Admin
+
 - Dashboard operasional.
 - Manajemen pengguna, kreator, dan brand.
 - Manajemen campaign.
@@ -14,6 +15,7 @@ ClipHub adalah aplikasi web berbasis **Laravel 12** dan **Tailwind CSS 4** untuk
 - Pengaturan platform sederhana.
 
 ### Brand
+
 - Dashboard brand.
 - Membuat dan melihat campaign.
 - Review submission kreator.
@@ -22,6 +24,7 @@ ClipHub adalah aplikasi web berbasis **Laravel 12** dan **Tailwind CSS 4** untuk
 - Profil brand dasar.
 
 ### Kreator
+
 - Dashboard kreator.
 - Marketplace campaign.
 - Detail campaign.
@@ -33,6 +36,7 @@ ClipHub adalah aplikasi web berbasis **Laravel 12** dan **Tailwind CSS 4** untuk
 ## Struktur Database
 
 Tabel bisnis utama:
+
 - `users`
 - `campaigns`
 - `submissions`
@@ -41,12 +45,14 @@ Tabel bisnis utama:
 - `withdrawals`
 
 Tabel sistem Laravel:
+
 - `cache`
 - `jobs`
 - `sessions`
 - `password_reset_tokens`
 
 Dokumentasi database tersedia di:
+
 - `DATABASE_README.md`
 - `database_diagram.puml`
 - `class_diagram.puml`
@@ -54,6 +60,7 @@ Dokumentasi database tersedia di:
 ## Prasyarat
 
 Sebelum menginstal dan menjalankan website ini, pastikan sistem Anda telah terinstal:
+
 - **PHP** >= 8.2
 - **Composer** (untuk dependensi backend PHP)
 - **Node.js** dan **npm** (untuk dependensi frontend JS/CSS)
@@ -66,15 +73,20 @@ Sebelum menginstal dan menjalankan website ini, pastikan sistem Anda telah terin
 Ikuti langkah-langkah di bawah ini untuk mengonfigurasi dan menjalankan project Clipfluence di komputer Anda:
 
 ### 1. Kloning Repository (Opsional)
+
 Jika Anda mengambil source code melalui Git, lakukan cloning:
+
 ```bash
 git clone https://github.com/hafisc/clipfluence.git
 cd cliphub
 ```
-*(Lewati langkah ini jika Anda sudah berada di dalam folder source code)*
+
+_(Lewati langkah ini jika Anda sudah berada di dalam folder source code)_
 
 ### 2. Instalasi Dependensi PHP (Backend)
+
 Jalankan perintah Composer di terminal untuk menginstal kerangka kerja Laravel dan package pihak ketiga lainnya:
+
 ```bash
 composer install
 ```
@@ -134,7 +146,15 @@ php artisan migrate:fresh --seed
 
 Catatan: `migrate:fresh` akan menghapus seluruh data lama.
 
-### 7. Storage link
+### 7. Seed Data Mock Brand (Opsional)
+
+Untuk mempercepat pengujian (testing) antarmuka dan alur modul Brand, bisa mengisi database dengan data tiruan (_mock data_) yang lengkap (kampanye, riwayat transaksi, dan pengajuan kreator) dengan menjalankan:
+
+```bash
+php artisan brand:seed-mock
+```
+
+### 8. Storage link
 
 ```bash
 php artisan storage:link
@@ -176,6 +196,7 @@ composer run dev
 ```
 
 Perintah ini menjalankan:
+
 - Laravel development server
 - Queue listener
 - Log pail
@@ -201,16 +222,14 @@ php artisan queue:listen --tries=1 --timeout=0
 
 Seeder membuat akun demo berikut:
 
-| Role | Email | Password |
-| --- | --- | --- |
-| Admin | admin@cliphub.com | password |
+| Role    | Email               | Password |
+| ------- | ------------------- | -------- |
+| Admin   | admin@cliphub.com   | password |
 | Kreator | kreator@cliphub.com | password |
-| Brand | brand@cliphub.com | password |
+| Brand   | brand@cliphub.com   | password |
 
 ## Testing
 
 ```bash
 php artisan test
 ```
-
-

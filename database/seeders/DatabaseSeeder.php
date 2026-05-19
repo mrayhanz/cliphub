@@ -45,6 +45,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             CampaignSeeder::class,
+            SubmissionSeeder::class,
+            BrandMockSeeder::class,
         ]);
     }
 }

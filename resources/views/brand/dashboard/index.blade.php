@@ -7,7 +7,6 @@
 @php
 $activeCampaigns = $campaigns->where('status', 'active')->count();
 $draftCampaigns = $campaigns->where('status', 'draft')->count();
-$totalCampaignBudget = $campaigns->sum('budget');
 @endphp
 
 <div class="space-y-5 pb-8">
@@ -15,7 +14,7 @@ $totalCampaignBudget = $campaigns->sum('budget');
         <div class="absolute -top-20 -right-20 w-64 h-64 rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 70%);"></div>
         <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-5">
             <div class="flex-1 min-w-0">
-                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold mb-3" style="background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.25); color: #34d399;">
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold mb-3" style="background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.25); color: #34d399;">
                     <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></div>
                     Brand Active
                 </div>
@@ -46,7 +45,7 @@ $totalCampaignBudget = $campaigns->sum('budget');
                 </div>
                 <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-700 group-hover:text-white transition-colors"></i>
             </div>
-            <p class="text-[10px] lg:text-xs text-slate-500 font-semibold mb-1 relative z-10">Saldo Tersedia</p>
+            <p class="text-xs lg:text-xs text-slate-500 font-semibold mb-1 relative z-10">Saldo Tersedia</p>
             <h2 class="text-lg lg:text-2xl font-black text-white leading-none relative z-10">
                 <span class="text-xs lg:text-sm text-slate-500 font-bold mr-0.5">Rp</span>{{ number_format($balance, 0, ',', '.') }}
             </h2>
@@ -59,7 +58,7 @@ $totalCampaignBudget = $campaigns->sum('budget');
                 </div>
                 <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-700 group-hover:text-white transition-colors"></i>
             </div>
-            <p class="text-[10px] lg:text-xs text-slate-500 font-semibold mb-1 relative z-10">Campaign Aktif</p>
+            <p class="text-xs lg:text-xs text-slate-500 font-semibold mb-1 relative z-10">Campaign Aktif</p>
             <h2 class="text-lg lg:text-2xl font-black text-white leading-none relative z-10">{{ $activeCampaigns }}</h2>
         </a>
 
@@ -70,7 +69,7 @@ $totalCampaignBudget = $campaigns->sum('budget');
                 </div>
                 <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-700 group-hover:text-white transition-colors"></i>
             </div>
-            <p class="text-[10px] lg:text-xs text-amber-500/80 font-bold mb-1 relative z-10">Menunggu Review</p>
+            <p class="text-xs lg:text-xs text-amber-500/80 font-bold mb-1 relative z-10">Menunggu Review</p>
             <h2 class="text-lg lg:text-2xl font-black text-white leading-none relative z-10">{{ $pendingReview }}</h2>
         </a>
 
@@ -81,11 +80,86 @@ $totalCampaignBudget = $campaigns->sum('budget');
                 </div>
                 <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-700 group-hover:text-white transition-colors"></i>
             </div>
-            <p class="text-[10px] lg:text-xs text-slate-500 font-semibold mb-1 relative z-10">Budget Campaign</p>
+            <p class="text-xs lg:text-xs text-slate-500 font-semibold mb-1 relative z-10">Dana Escrow (Aktif)</p>
             <h2 class="text-lg lg:text-2xl font-black text-white leading-none relative z-10">
-                <span class="text-xs lg:text-sm text-slate-500 font-bold mr-0.5">Rp</span>{{ number_format($totalCampaignBudget, 0, ',', '.') }}
+                <span class="text-xs lg:text-sm text-slate-500 font-bold mr-0.5">Rp</span>{{ number_format($escrow, 0, ',', '.') }}
             </h2>
         </a>
+    </div>
+
+    {{-- CHART SECTION & OVERVIEW --}}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5">
+        <div class="glass-card overflow-hidden lg:col-span-2 flex flex-col animate-fade-in-up">
+            <div class="px-5 py-4 border-b flex items-center justify-between" style="border-color: rgba(255,255,255,0.05);">
+                <div>
+                    <h3 class="text-sm font-bold text-white">Performa Views (7 Hari Terakhir)</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Total organic views dari seluruh submission yang telah di-approve.</p>
+                </div>
+            </div>
+            <div class="p-5">
+                <div id="viewsChart" class="w-full h-64"></div>
+            </div>
+        </div>
+
+        <div class="glass-card overflow-hidden lg:col-span-1 flex flex-col animate-fade-in-up delay-100">
+            <div class="px-5 py-4 border-b" style="border-color: rgba(255,255,255,0.05);">
+                <h3 class="text-sm font-bold text-white">Rangkuman Kinerja</h3>
+                <p class="text-xs text-slate-500 mt-0.5">Statistik keseluruhan campaign Anda.</p>
+            </div>
+            <div class="p-5 space-y-5 flex-1 flex flex-col justify-between">
+                {{-- Total Organic Views --}}
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 shrink-0 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+                            <i data-lucide="eye" class="w-6 h-6 text-emerald-400"></i>
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <p class="text-xs text-slate-500 font-bold mb-0.5">Total Organic Views</p>
+                            <h4 class="text-xl font-black text-white leading-none">{{ number_format($totalViews, 0, ',', '.') }}</h4>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Total Approved UGC --}}
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 shrink-0 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
+                            <i data-lucide="video" class="w-6 h-6 text-blue-400"></i>
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <p class="text-xs text-slate-500 font-bold mb-0.5">Total Approved UGC</p>
+                            <h4 class="text-xl font-black text-white leading-none">{{ number_format($totalUgc, 0, ',', '.') }} <span class="text-sm text-slate-500 font-bold">Klip</span></h4>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Rata-rata Views per Klip --}}
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 shrink-0 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
+                            <i data-lucide="trending-up" class="w-6 h-6 text-purple-400"></i>
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <p class="text-xs text-slate-500 font-bold mb-0.5">Rata-rata Views / Klip</p>
+                            <h4 class="text-xl font-black text-white leading-none">{{ number_format($avgViews, 0, ',', '.') }} <span class="text-sm text-slate-500 font-bold">Views</span></h4>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Dana Terbayarkan --}}
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 shrink-0 rounded-xl bg-amber-500/10 flex items-center justify-center border border-amber-500/20">
+                            <i data-lucide="coins" class="w-6 h-6 text-amber-400"></i>
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <p class="text-xs text-slate-500 font-bold mb-0.5">Dana Terbayarkan</p>
+                            <h4 class="text-xl font-black text-white leading-none"><span class="text-sm text-slate-500 font-black mr-0.5">Rp</span>{{ number_format($totalPaidRewards, 0, ',', '.') }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5">
@@ -93,9 +167,9 @@ $totalCampaignBudget = $campaigns->sum('budget');
             <div class="px-5 py-4 border-b flex items-center justify-between" style="border-color: rgba(255,255,255,0.05);">
                 <div>
                     <h3 class="text-sm font-bold text-white">Campaign Terbaru</h3>
-                    <p class="text-[10px] text-slate-500 mt-0.5">Pantau status, budget, dan deadline campaign Anda.</p>
+                    <p class="text-xs text-slate-500 mt-0.5">Pantau status, budget, dan deadline campaign Anda.</p>
                 </div>
-                <a href="{{ route('brand.campaigns') }}" class="text-[10px] font-semibold text-brand hover:text-brand-light transition-colors flex items-center gap-1">
+                <a href="{{ route('brand.campaigns') }}" class="text-xs font-semibold text-brand hover:text-brand-light transition-colors flex items-center gap-1">
                     Lihat Semua <i data-lucide="arrow-right" class="w-3 h-3"></i>
                 </a>
             </div>
@@ -106,7 +180,7 @@ $totalCampaignBudget = $campaigns->sum('budget');
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                         <div class="min-w-0 pr-4">
                             <h4 class="text-xs lg:text-sm font-bold text-white mb-1 truncate group-hover:text-emerald-200 transition-colors">{{ $c->title }}</h4>
-                            <p class="text-[9px] lg:text-[10px] font-bold text-slate-600 uppercase tracking-widest flex items-center gap-1.5">
+                            <p class="text-[9px] lg:text-xs font-bold text-slate-600 uppercase tracking-widest flex items-center gap-1.5">
                                 <i data-lucide="smartphone" class="w-3 h-3"></i> {{ $c->platform ?? 'Mixed' }}
                             </p>
                         </div>
@@ -118,19 +192,19 @@ $totalCampaignBudget = $campaigns->sum('budget');
 
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                         <div>
-                            <p class="text-[9px] lg:text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-1">Budget</p>
+                            <p class="text-[9px] lg:text-xs font-bold text-slate-600 uppercase tracking-widest mb-1">Budget</p>
                             <p class="text-xs lg:text-sm font-black text-white">Rp {{ number_format($c->budget, 0, ',', '.') }}</p>
                         </div>
                         <div>
-                            <p class="text-[9px] lg:text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-1">Rate / 1K</p>
+                            <p class="text-[9px] lg:text-xs font-bold text-slate-600 uppercase tracking-widest mb-1">Rate / 1K</p>
                             <p class="text-xs lg:text-sm font-black text-white">Rp {{ number_format($c->price_per_1k, 0, ',', '.') }}</p>
                         </div>
                         <div>
-                            <p class="text-[9px] lg:text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-1">Slot</p>
+                            <p class="text-[9px] lg:text-xs font-bold text-slate-600 uppercase tracking-widest mb-1">Slot</p>
                             <p class="text-xs lg:text-sm font-black text-white">{{ $c->slots }}</p>
                         </div>
                         <div>
-                            <p class="text-[9px] lg:text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-1">Draft</p>
+                            <p class="text-[9px] lg:text-xs font-bold text-slate-600 uppercase tracking-widest mb-1">Draft</p>
                             <p class="text-xs lg:text-sm font-black text-white">{{ $draftCampaigns }}</p>
                         </div>
                     </div>
@@ -152,7 +226,7 @@ $totalCampaignBudget = $campaigns->sum('budget');
         <div class="glass-card overflow-hidden lg:col-span-1 flex flex-col animate-fade-in-up delay-100">
             <div class="px-5 py-4 border-b" style="border-color: rgba(255,255,255,0.05);">
                 <h3 class="text-sm font-bold text-white">Langkah Berikutnya</h3>
-                <p class="text-[10px] text-slate-500 mt-0.5">Prioritas yang paling sering dibutuhkan brand.</p>
+                <p class="text-xs text-slate-500 mt-0.5">Prioritas yang paling sering dibutuhkan brand.</p>
             </div>
 
             <div class="p-4 space-y-3">
@@ -177,5 +251,67 @@ $totalCampaignBudget = $campaigns->sum('budget');
             </div>
         </div>
     </div>
+
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var options = {
+            series: [{
+                name: 'Organic Views',
+                data: @json($chartData)
+            }],
+            chart: {
+                type: 'area',
+                height: 280,
+                toolbar: { show: false },
+                background: 'transparent',
+                fontFamily: 'inherit'
+            },
+            colors: ['#34d399'],
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shadeIntensity: 1,
+                    opacityFrom: 0.4,
+                    opacityTo: 0.05,
+                    stops: [0, 90, 100]
+                }
+            },
+            dataLabels: { enabled: false },
+            stroke: { curve: 'smooth', width: 3 },
+            xaxis: {
+                categories: @json($chartLabels),
+                axisBorder: { show: false },
+                axisTicks: { show: false },
+                labels: { style: { colors: '#64748b', fontSize: '10px', fontWeight: 600 } }
+            },
+            yaxis: {
+                labels: { 
+                    style: { colors: '#64748b', fontSize: '10px', fontWeight: 600 },
+                    formatter: function(val) {
+                        if(val >= 1000) return (val/1000).toFixed(1) + 'k';
+                        return val;
+                    }
+                }
+            },
+            grid: {
+                borderColor: 'rgba(255,255,255,0.05)',
+                strokeDashArray: 4,
+                yaxis: { lines: { show: true } }
+            },
+            theme: { mode: 'dark' },
+            tooltip: {
+                theme: 'dark',
+                y: { formatter: function (val) { return val.toLocaleString('id-ID') + " views" } }
+            }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#viewsChart"), options);
+        chart.render();
+    });
+</script>
+@endpush

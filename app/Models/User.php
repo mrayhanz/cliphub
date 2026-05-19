@@ -54,6 +54,14 @@ class User extends Authenticatable
         return $this->hasMany(Campaign::class);
     }
 
+    /**
+     * Get the brand profile associated with the user.
+     */
+    public function brandProfile()
+    {
+        return $this->hasOne(\App\Models\BrandProfile::class);
+    }
+
     public function deposits()
     {
         return $this->hasMany(Deposit::class);
