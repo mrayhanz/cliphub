@@ -46,8 +46,8 @@ class CampaignController extends Controller
             'crColor'    => $crColor,
             'statusText' => $statusText,
             'statusCls'  => $statusCls,
-            'image'      => asset('storage/' . $campaign->thumbnail), // Try to use storage first, but default mock uses direct asset
-            'cover'      => asset('storage/' . $campaign->thumbnail),
+            'image'      => $campaign->thumbnail_url,
+            'cover'      => $campaign->thumbnail_url,
             'full'       => $isFull,
         ];
     }
@@ -61,12 +61,7 @@ class CampaignController extends Controller
 
         $campaigns = [];
         foreach ($campaignsData as $c) {
-            // For seeder that uses dummy paths like 'images/campaigns/tokopedia.png'
             $mapped = $this->mapCampaignToViewArray($c);
-            if (str_starts_with($c->thumbnail, 'images/')) {
-                $mapped['image'] = asset($c->thumbnail);
-                $mapped['cover'] = asset($c->thumbnail);
-            }
             $campaigns[] = $mapped;
         }
 
@@ -78,10 +73,6 @@ class CampaignController extends Controller
         $c = \App\Models\Campaign::with('user')->findOrFail($id);
         
         $campaign = $this->mapCampaignToViewArray($c);
-        if (str_starts_with($c->thumbnail, 'images/')) {
-            $campaign['image'] = asset($c->thumbnail);
-            $campaign['cover'] = asset($c->thumbnail);
-        }
         
         return view('kreator.campaigns.show', compact('campaign'));
     }

@@ -16,18 +16,18 @@
         {{-- Search --}}
         <div class="relative flex-1 min-w-[200px] max-w-sm">
             <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
-            <input type="text" x-model="searchQuery" id="ccSearch" placeholder="Cari campaign…" class="bg-black border-none text-[0.8rem] font-semibold shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] text-white rounded-2xl py-3 pr-4 pl-10 outline-none transition-shadow duration-200 w-full min-w-[200px] focus:shadow-[inset_0_0_0_1.5px_rgba(139,92,246,0.6),_0_0_0_4px_rgba(139,92,246,0.1)]">
+            <input type="text" x-model="searchQuery" id="ccSearch" placeholder="Cari campaign…" class="bg-black border-none text-[0.8rem] font-semibold shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] text-white rounded-2xl py-3 pr-4 pl-10 outline-none transition-shadow duration-200 w-full min-w-[200px] focus:shadow-[inset_0_0_0_1.5px_rgba(16,185,129,0.6),_0_0_0_4px_rgba(16,185,129,0.1)]">
         </div>
 
         {{-- Type toggle --}}
         <div class="inline-flex overflow-x-auto gap-1.5 cc-toggle [&::-webkit-scrollbar]:hidden [scrollbar-width:none] [-ms-overflow-style:none]">
-            <button @click="currentType = 'all'" :class="currentType === 'all' ? 'active' : ''" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-[0.75rem] font-extrabold cursor-pointer transition-all duration-200 text-zinc-500 bg-transparent whitespace-nowrap hover:bg-white/[0.02] hover:text-white [&.active]:bg-violet-500/10 [&.active]:text-violet-400 [&.active]:shadow-[inset_0_0_0_1px_rgba(139,92,246,0.3)]">
-                <span class="w-1.5 h-1.5 rounded-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.8)]"></span> Semua
+            <button @click="currentType = 'all'" :class="currentType === 'all' ? 'active' : ''" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-[0.75rem] font-extrabold cursor-pointer transition-all duration-200 text-zinc-500 bg-transparent whitespace-nowrap hover:bg-white/[0.02] hover:text-white [&.active]:bg-emerald-500/10 [&.active]:text-emerald-400 [&.active]:shadow-[inset_0_0_0_1px_rgba(16,185,129,0.3)]">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span> Semua
             </button>
-            <button @click="currentType = 'clip'" :class="currentType === 'clip' ? 'active' : ''" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-[0.75rem] font-extrabold cursor-pointer transition-all duration-200 text-zinc-500 bg-transparent whitespace-nowrap hover:bg-white/[0.02] hover:text-white [&.active]:bg-violet-500/10 [&.active]:text-violet-400 [&.active]:shadow-[inset_0_0_0_1px_rgba(139,92,246,0.3)]">
-                <span class="w-1.5 h-1.5 rounded-full bg-pink-500 shadow-[0_0_8px_rgba(236,72,153,0.8)]"></span> Nge-clip
+            <button @click="currentType = 'clip'" :class="currentType === 'clip' ? 'active' : ''" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-[0.75rem] font-extrabold cursor-pointer transition-all duration-200 text-zinc-500 bg-transparent whitespace-nowrap hover:bg-white/[0.02] hover:text-white [&.active]:bg-emerald-500/10 [&.active]:text-emerald-400 [&.active]:shadow-[inset_0_0_0_1px_rgba(16,185,129,0.3)]">
+                <span class="w-1.5 h-1.5 rounded-full bg-teal-400 shadow-[0_0_8px_rgba(45,212,191,0.8)]"></span> Nge-clip
             </button>
-            <button @click="currentType = 'ugc'" :class="currentType === 'ugc' ? 'active' : ''" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-[0.75rem] font-extrabold cursor-pointer transition-all duration-200 text-zinc-500 bg-transparent whitespace-nowrap hover:bg-white/[0.02] hover:text-white [&.active]:bg-violet-500/10 [&.active]:text-violet-400 [&.active]:shadow-[inset_0_0_0_1px_rgba(139,92,246,0.3)]">
+            <button @click="currentType = 'ugc'" :class="currentType === 'ugc' ? 'active' : ''" class="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-[0.75rem] font-extrabold cursor-pointer transition-all duration-200 text-zinc-500 bg-transparent whitespace-nowrap hover:bg-white/[0.02] hover:text-white [&.active]:bg-emerald-500/10 [&.active]:text-emerald-400 [&.active]:shadow-[inset_0_0_0_1px_rgba(16,185,129,0.3)]">
                 <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.8)]"></span> UGC
             </button>
         </div>
@@ -35,7 +35,7 @@
         <div class="flex-1 lg:flex-none"></div>
 
         {{-- Filter icon --}}
-        <button class="flex items-center justify-center w-10 h-10 rounded-xl bg-black border-none text-slate-400 hover:text-white hover:bg-neutral-900 transition-colors shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)] ml-auto cursor-pointer focus:outline-none focus:shadow-[inset_0_0_0_1.5px_rgba(139,92,246,0.5)]">
+        <button class="flex items-center justify-center w-10 h-10 rounded-xl bg-black border-none text-slate-400 hover:text-white hover:bg-neutral-900 transition-colors shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)] ml-auto cursor-pointer focus:outline-none focus:shadow-[inset_0_0_0_1.5px_rgba(16,185,129,0.5)]">
             <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
         </button>
     </div>
@@ -46,7 +46,7 @@
     <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 lg:gap-4" id="ccGrid">
         @foreach($campaigns as $idx => $c)
 
-        <a href="{{ $c['full'] ? '#' : route('kreator.campaigns.show', $c['id']) }}" class="bg-[#0a0a0a] rounded-[1.25rem] overflow-hidden relative flex flex-col shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)] transition-all duration-200 {{ $c['full'] ? 'opacity-50 grayscale cursor-default pointer-events-none' : 'group hover:-translate-y-[3px] hover:shadow-[inset_0_0_0_1px_rgba(139,92,246,0.3),_0_10px_30px_rgba(0,0,0,0.6)] cursor-pointer' }}"
+        <a href="{{ $c['full'] ? '#' : route('kreator.campaigns.show', $c['id']) }}" class="bg-[#0a0a0a] rounded-[1.25rem] overflow-hidden relative flex flex-col shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)] transition-all duration-200 {{ $c['full'] ? 'opacity-50 grayscale cursor-default pointer-events-none' : 'group hover:-translate-y-[3px] hover:shadow-[inset_0_0_0_1px_rgba(16,185,129,0.3),_0_10px_30px_rgba(0,0,0,0.6)] cursor-pointer' }}"
              x-show="(currentType === 'all' || currentType === '{{ $c['type'] }}') && (searchQuery === '' || '{{ strtolower(addslashes($c['title'] . ' ' . $c['brand'] . ' ' . $c['category'])) }}'.includes(searchQuery.toLowerCase()))"
              style="animation-delay: {{ $idx * 0.06 }}s">
 
@@ -80,7 +80,7 @@
             <div class="p-4 flex-1 flex flex-col bg-[#0a0a0a]">
 
                 {{-- Title --}}
-                <h3 class="text-[0.95rem] font-black text-white leading-tight mb-2 transition-colors {{ $c['full'] ? '' : 'group-hover:text-violet-400' }}">{{ $c['title'] }}</h3>
+                <h3 class="text-[0.95rem] font-black text-white leading-tight mb-2 transition-colors {{ $c['full'] ? '' : 'group-hover:text-emerald-400' }}">{{ $c['title'] }}</h3>
 
                 {{-- Desc --}}
                 <p class="text-[0.7rem] text-zinc-400 leading-relaxed mb-4 line-clamp-2 flex-1">{{ $c['desc'] }}</p>
@@ -97,7 +97,7 @@
                     </div>
                     <div class="flex-1 flex flex-col items-center text-center">
                         <span class="text-[0.55rem] font-black text-zinc-500 uppercase tracking-wider mb-1">Rate/1K</span>
-                        <span class="text-[0.7rem] font-extrabold text-violet-400">{{ $c['rate'] }}</span>
+                        <span class="text-[0.7rem] font-extrabold text-emerald-400">{{ $c['rate'] }}</span>
                     </div>
                 </div>
 

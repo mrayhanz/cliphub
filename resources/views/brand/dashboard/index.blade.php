@@ -4,148 +4,183 @@
 @section('page_title', 'Brand Dashboard')
 
 @section('content')
+@php
+$activeCampaigns = $campaigns->where('status', 'active')->count();
+$draftCampaigns = $campaigns->where('status', 'draft')->count();
+@endphp
 
 <div class="space-y-5 pb-8">
-
-    {{-- ===== HERO / GREETING CARD ===== --}}
     <div class="hero-card p-5 lg:p-7 animate-fade-in-up">
-        <!-- Decorative elements -->
         <div class="absolute -top-20 -right-20 w-64 h-64 rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 70%);"></div>
-        <div class="absolute -bottom-16 -left-10 w-48 h-48 rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(5,150,105,0.1) 0%, transparent 70%);"></div>
-        <!-- Grid texture overlay -->
-        <div class="absolute inset-0 pointer-events-none opacity-[0.03] rounded-2xl"
-             style="background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 32px 32px;"></div>
-
         <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-5">
-
-            {{-- Left: Greeting --}}
             <div class="flex-1 min-w-0">
-                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold mb-3" style="background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.25); color: #34d399;">
+                <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold mb-3" style="background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.25); color: #34d399;">
                     <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></div>
                     Brand Active
                 </div>
                 <h1 class="text-xl lg:text-2xl font-black text-white tracking-tight leading-snug">
-                    Selamat datang, {{ auth()->user()->name }} 👋
+                    Selamat datang, {{ auth()->user()->name }}
                 </h1>
                 <p class="text-emerald-200/70 text-xs lg:text-sm mt-1.5 leading-relaxed max-w-lg">
-                    Pantau kinerja <span class="font-bold text-white">campaign aktif</span> Anda dan review UGC dari kreator hari ini.
+                    Kelola campaign, pastikan saldo cukup, dan review submission kreator dari satu tempat.
                 </p>
             </div>
 
-            {{-- Right: Action Buttons --}}
             <div class="flex flex-col gap-2.5 sm:w-auto shrink-0 w-full">
-                <a href="{{ route('brand.campaigns.create') ?? '#' }}" class="btn-primary sm:w-48">
+                <a href="{{ route('brand.campaigns.create') }}" class="btn-primary sm:w-48">
                     <i data-lucide="plus-circle" class="w-4 h-4"></i> Buat Campaign
                 </a>
-                <a href="{{ route('brand.finance') ?? '#' }}" class="btn-ghost sm:w-48">
+                <a href="{{ route('brand.finance') }}" class="btn-ghost sm:w-48">
                     <i data-lucide="wallet" class="w-4 h-4"></i> Top-up Saldo
                 </a>
             </div>
-
         </div>
     </div>
 
-    {{-- ===== STAT CARDS: 2-col mobile → 4-col desktop ===== --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
-        
-        <div class="stat-card group animate-fade-in-up">
+        <a href="{{ route('brand.finance') }}" class="stat-card group animate-fade-in-up block hover:border-white/15 transition-colors">
             <div class="flex items-start justify-between mb-3 lg:mb-4 relative z-10">
                 <div class="icon-box-green">
-                    <i data-lucide="dollar-sign" class="w-4 h-4 text-emerald-400"></i>
+                    <i data-lucide="wallet" class="w-4 h-4 text-emerald-400"></i>
                 </div>
-                <p class="text-[10px] lg:text-xs text-slate-500 font-semibold">Saldo Deposit</p>
+                <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-700 group-hover:text-white transition-colors"></i>
             </div>
+            <p class="text-xs lg:text-xs text-slate-500 font-semibold mb-1 relative z-10">Saldo Tersedia</p>
             <h2 class="text-lg lg:text-2xl font-black text-white leading-none relative z-10">
                 <span class="text-xs lg:text-sm text-slate-500 font-bold mr-0.5">Rp</span>{{ number_format($balance, 0, ',', '.') }}
             </h2>
-        </div>
+        </a>
 
-        <div class="stat-card group animate-fade-in-up delay-100">
+        <a href="{{ route('brand.campaigns') }}" class="stat-card group animate-fade-in-up delay-100 block hover:border-white/15 transition-colors">
             <div class="flex items-start justify-between mb-3 lg:mb-4 relative z-10">
                 <div class="icon-box-green">
-                    <i data-lucide="trending-up" class="w-4 h-4 text-emerald-400"></i>
+                    <i data-lucide="megaphone" class="w-4 h-4 text-emerald-400"></i>
                 </div>
-                <p class="text-[10px] lg:text-xs text-slate-500 font-semibold">Total Views</p>
+                <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-700 group-hover:text-white transition-colors"></i>
             </div>
-            <h2 class="text-lg lg:text-2xl font-black text-white leading-none relative z-10">
-                {{ number_format($totalViews, 0, ',', '.') }}
-            </h2>
-        </div>
+            <p class="text-xs lg:text-xs text-slate-500 font-semibold mb-1 relative z-10">Campaign Aktif</p>
+            <h2 class="text-lg lg:text-2xl font-black text-white leading-none relative z-10">{{ $activeCampaigns }}</h2>
+        </a>
 
-        <div class="stat-card group animate-fade-in-up delay-200">
-            <div class="flex items-start justify-between mb-3 lg:mb-4 relative z-10">
-                <div class="icon-box-slate">
-                    <i data-lucide="video" class="w-4 h-4 text-slate-300"></i>
-                </div>
-            </div>
-            <p class="text-[10px] lg:text-xs text-slate-500 font-semibold mb-1 relative z-10">Video UGC Dibuat</p>
-            <h2 class="text-lg lg:text-2xl font-black text-white leading-none relative z-10">{{ $totalUgc }}</h2>
-        </div>
-
-        <div class="stat-card group animate-fade-in-up delay-300" style="{{ $pendingReview > 0 ? 'border-color: rgba(245,158,11,0.2);' : '' }}">
-            <div class="absolute inset-0 rounded-2xl pointer-events-none" style="background: radial-gradient(ellipse at bottom right, rgba(245,158,11,0.05) 0%, transparent 70%);"></div>
+        <a href="{{ route('brand.submissions') }}" class="stat-card group animate-fade-in-up delay-200 block hover:border-white/15 transition-colors">
             <div class="flex items-start justify-between mb-3 lg:mb-4 relative z-10">
                 <div class="icon-box-amber">
-                    <i data-lucide="clock" class="w-4 h-4 text-amber-400"></i>
+                    <i data-lucide="file-check-2" class="w-4 h-4 text-amber-400"></i>
                 </div>
-                @if($pendingReview > 0)
-                <span class="badge-amber animate-pulse text-[9px]">Action Needed</span>
-                @endif
+                <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-700 group-hover:text-white transition-colors"></i>
             </div>
-            <p class="text-[10px] lg:text-xs text-amber-500/80 font-bold mb-1 relative z-10">Menunggu Review</p>
+            <p class="text-xs lg:text-xs text-amber-500/80 font-bold mb-1 relative z-10">Menunggu Review</p>
             <h2 class="text-lg lg:text-2xl font-black text-white leading-none relative z-10">{{ $pendingReview }}</h2>
-        </div>
+        </a>
 
+        <a href="{{ route('brand.campaigns') }}" class="stat-card group animate-fade-in-up delay-300 block hover:border-white/15 transition-colors">
+            <div class="flex items-start justify-between mb-3 lg:mb-4 relative z-10">
+                <div class="icon-box-slate">
+                    <i data-lucide="lock" class="w-4 h-4 text-slate-300"></i>
+                </div>
+                <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-700 group-hover:text-white transition-colors"></i>
+            </div>
+            <p class="text-xs lg:text-xs text-slate-500 font-semibold mb-1 relative z-10">Dana Escrow (Aktif)</p>
+            <h2 class="text-lg lg:text-2xl font-black text-white leading-none relative z-10">
+                <span class="text-xs lg:text-sm text-slate-500 font-bold mr-0.5">Rp</span>{{ number_format($escrow, 0, ',', '.') }}
+            </h2>
+        </a>
     </div>
 
-    {{-- ===== QUICK ACTIONS: Mobile only ===== --}}
-    <div class="lg:hidden animate-fade-in-up delay-200">
-        <p class="text-[9px] font-bold tracking-widest uppercase text-slate-600 mb-2.5 px-0.5">Aksi Cepat</p>
-        <div class="grid grid-cols-3 gap-2.5">
-            <a href="{{ route('brand.submissions') }}" class="glass-card-hover flex flex-col items-center justify-center gap-2 p-3.5 text-center transition-all duration-150 active:scale-95">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.15);">
-                    <i data-lucide="check-square" class="w-5 h-5 text-brand"></i>
-                </div>
-                <span class="text-[10px] font-bold text-slate-400 leading-tight">Review<br>Konten</span>
-            </a>
-            <a href="{{ route('brand.campaigns') }}" class="glass-card-hover flex flex-col items-center justify-center gap-2 p-3.5 text-center transition-all duration-150 active:scale-95">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.12);">
-                    <i data-lucide="bar-chart-2" class="w-5 h-5 text-emerald-400"></i>
-                </div>
-                <span class="text-[10px] font-bold text-slate-400 leading-tight">Laporan<br>Performa</span>
-            </a>
-            <a href="{{ route('brand.finance') }}" class="glass-card-hover flex flex-col items-center justify-center gap-2 p-3.5 text-center transition-all duration-150 active:scale-95">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center" style="background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.12);">
-                    <i data-lucide="receipt" class="w-5 h-5 text-teal-400"></i>
-                </div>
-                <span class="text-[10px] font-bold text-slate-400 leading-tight">Riwayat<br>Invoice</span>
-            </a>
-        </div>
-    </div>
-
-    {{-- ===== MAIN LAYOUT (2 Columns) ===== --}}
+    {{-- CHART SECTION & OVERVIEW --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5">
-
-        {{-- LEFT COLUMN: Active Campaigns --}}
         <div class="glass-card overflow-hidden lg:col-span-2 flex flex-col animate-fade-in-up">
             <div class="px-5 py-4 border-b flex items-center justify-between" style="border-color: rgba(255,255,255,0.05);">
                 <div>
-                    <h3 class="text-sm font-bold text-white">Campaign Aktif</h3>
-                    <p class="text-[10px] text-slate-500 mt-0.5">Serapan budget & views real-time.</p>
+                    <h3 class="text-sm font-bold text-white">Performa Views (7 Hari Terakhir)</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Total organic views dari seluruh submission yang telah di-approve.</p>
                 </div>
-                <a href="{{ route('brand.campaigns') }}" class="text-[10px] font-semibold text-brand hover:text-brand-light transition-colors flex items-center gap-1">
+            </div>
+            <div class="p-5">
+                <div id="viewsChart" class="w-full h-64"></div>
+            </div>
+        </div>
+
+        <div class="glass-card overflow-hidden lg:col-span-1 flex flex-col animate-fade-in-up delay-100">
+            <div class="px-5 py-4 border-b" style="border-color: rgba(255,255,255,0.05);">
+                <h3 class="text-sm font-bold text-white">Rangkuman Kinerja</h3>
+                <p class="text-xs text-slate-500 mt-0.5">Statistik keseluruhan campaign Anda.</p>
+            </div>
+            <div class="p-5 space-y-5 flex-1 flex flex-col justify-between">
+                {{-- Total Organic Views --}}
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 shrink-0 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+                            <i data-lucide="eye" class="w-6 h-6 text-emerald-400"></i>
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <p class="text-xs text-slate-500 font-bold mb-0.5">Total Organic Views</p>
+                            <h4 class="text-xl font-black text-white leading-none">{{ number_format($totalViews, 0, ',', '.') }}</h4>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Total Approved UGC --}}
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 shrink-0 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
+                            <i data-lucide="video" class="w-6 h-6 text-blue-400"></i>
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <p class="text-xs text-slate-500 font-bold mb-0.5">Total Approved UGC</p>
+                            <h4 class="text-xl font-black text-white leading-none">{{ number_format($totalUgc, 0, ',', '.') }} <span class="text-sm text-slate-500 font-bold">Klip</span></h4>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Rata-rata Views per Klip --}}
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 shrink-0 rounded-xl bg-purple-500/10 flex items-center justify-center border border-purple-500/20">
+                            <i data-lucide="trending-up" class="w-6 h-6 text-purple-400"></i>
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <p class="text-xs text-slate-500 font-bold mb-0.5">Rata-rata Views / Klip</p>
+                            <h4 class="text-xl font-black text-white leading-none">{{ number_format($avgViews, 0, ',', '.') }} <span class="text-sm text-slate-500 font-bold">Views</span></h4>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Dana Terbayarkan --}}
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 shrink-0 rounded-xl bg-amber-500/10 flex items-center justify-center border border-amber-500/20">
+                            <i data-lucide="coins" class="w-6 h-6 text-amber-400"></i>
+                        </div>
+                        <div class="flex flex-col justify-center">
+                            <p class="text-xs text-slate-500 font-bold mb-0.5">Dana Terbayarkan</p>
+                            <h4 class="text-xl font-black text-white leading-none"><span class="text-sm text-slate-500 font-black mr-0.5">Rp</span>{{ number_format($totalPaidRewards, 0, ',', '.') }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5">
+        <div class="glass-card overflow-hidden lg:col-span-2 flex flex-col animate-fade-in-up">
+            <div class="px-5 py-4 border-b flex items-center justify-between" style="border-color: rgba(255,255,255,0.05);">
+                <div>
+                    <h3 class="text-sm font-bold text-white">Campaign Terbaru</h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Pantau status, budget, dan deadline campaign Anda.</p>
+                </div>
+                <a href="{{ route('brand.campaigns') }}" class="text-xs font-semibold text-brand hover:text-brand-light transition-colors flex items-center gap-1">
                     Lihat Semua <i data-lucide="arrow-right" class="w-3 h-3"></i>
                 </a>
             </div>
 
             <div class="p-4 space-y-3">
                 @forelse($campaigns as $c)
-                <div class="rounded-xl p-4 transition-all duration-200 group cursor-pointer"
-                     style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 hover:border-emerald-500/20">
+                <div class="rounded-xl p-4 transition-all duration-200 group" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                         <div class="min-w-0 pr-4">
                             <h4 class="text-xs lg:text-sm font-bold text-white mb-1 truncate group-hover:text-emerald-200 transition-colors">{{ $c->title }}</h4>
-                            <p class="text-[9px] lg:text-[10px] font-bold text-slate-600 uppercase tracking-widest flex items-center gap-1.5">
+                            <p class="text-[9px] lg:text-xs font-bold text-slate-600 uppercase tracking-widest flex items-center gap-1.5">
                                 <i data-lucide="smartphone" class="w-3 h-3"></i> {{ $c->platform ?? 'Mixed' }}
                             </p>
                         </div>
@@ -155,20 +190,23 @@
                         </span>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-4 mb-3">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                         <div>
-                            <p class="text-[9px] lg:text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-1">Budget Total</p>
+                            <p class="text-[9px] lg:text-xs font-bold text-slate-600 uppercase tracking-widest mb-1">Budget</p>
                             <p class="text-xs lg:text-sm font-black text-white">Rp {{ number_format($c->budget, 0, ',', '.') }}</p>
                         </div>
-                        <div class="text-right flex flex-col items-end">
-                            <p class="text-[9px] lg:text-[10px] font-bold text-slate-600 uppercase tracking-widest mb-1">UGC</p>
-                            <p class="text-xs lg:text-sm font-black text-white flex items-center gap-1.5">0 <i data-lucide="video" class="w-3.5 h-3.5 text-slate-500"></i></p>
+                        <div>
+                            <p class="text-[9px] lg:text-xs font-bold text-slate-600 uppercase tracking-widest mb-1">Rate / 1K</p>
+                            <p class="text-xs lg:text-sm font-black text-white">Rp {{ number_format($c->price_per_1k, 0, ',', '.') }}</p>
                         </div>
-                    </div>
-
-                    <div class="w-full h-1 rounded-full overflow-hidden relative" style="background: rgba(255,255,255,0.04);">
-                        <div class="absolute left-0 top-0 h-full rounded-full progress-bar"
-                             style="width: 0%; background: linear-gradient(90deg, #059669, #10b981);"></div>
+                        <div>
+                            <p class="text-[9px] lg:text-xs font-bold text-slate-600 uppercase tracking-widest mb-1">Slot</p>
+                            <p class="text-xs lg:text-sm font-black text-white">{{ $c->slots }}</p>
+                        </div>
+                        <div>
+                            <p class="text-[9px] lg:text-xs font-bold text-slate-600 uppercase tracking-widest mb-1">Draft</p>
+                            <p class="text-xs lg:text-sm font-black text-white">{{ $draftCampaigns }}</p>
+                        </div>
                     </div>
                 </div>
                 @empty
@@ -176,46 +214,104 @@
                     <div class="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-3" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);">
                         <i data-lucide="megaphone" class="w-5 h-5 text-slate-600"></i>
                     </div>
-                    <p class="text-xs text-slate-600 font-medium">Belum ada campaign aktif.</p>
+                    <p class="text-xs text-slate-600 font-medium mb-4">Belum ada campaign.</p>
+                    <a href="{{ route('brand.campaigns.create') }}" class="btn-primary inline-flex w-auto px-4">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i> Buat Campaign
+                    </a>
                 </div>
                 @endforelse
             </div>
         </div>
 
-        {{-- RIGHT COLUMN: Action Needed (Review) --}}
         <div class="glass-card overflow-hidden lg:col-span-1 flex flex-col animate-fade-in-up delay-100">
-            <div class="px-5 py-4 border-b flex items-center justify-between" style="border-color: rgba(255,255,255,0.05);">
-                <div>
-                    <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                        Butuh Review
-                        <span class="flex h-2 w-2 relative">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style="background: #10b981;"></span>
-                            <span class="relative inline-flex rounded-full h-2 w-2" style="background: #10b981;"></span>
-                        </span>
-                    </h3>
-                    <p class="text-[10px] text-slate-500 mt-0.5">UGC menunggu ACC.</p>
-                </div>
+            <div class="px-5 py-4 border-b" style="border-color: rgba(255,255,255,0.05);">
+                <h3 class="text-sm font-bold text-white">Langkah Berikutnya</h3>
+                <p class="text-xs text-slate-500 mt-0.5">Prioritas yang paling sering dibutuhkan brand.</p>
             </div>
 
-            <div class="p-3 space-y-2 flex-1 overflow-y-auto">
-                {{-- Dynamic submissions will be added here once the feature is ready --}}
-                <div class="py-10 text-center">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);">
-                        <i data-lucide="inbox" class="w-4 h-4 text-slate-600"></i>
+            <div class="p-4 space-y-3">
+                <a href="{{ route('brand.campaigns.create') }}" class="block rounded-xl p-4 border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="plus-circle" class="w-4 h-4 text-brand"></i>
+                        <span class="text-xs font-bold text-white">Buat campaign baru</span>
                     </div>
-                    <p class="text-xs text-slate-600 font-medium">Belum ada UGC yang butuh review.</p>
-                </div>
-            </div>
-
-            <div class="p-3 pt-0">
-                <a href="{{ route('brand.submissions') }}" class="w-full py-2.5 rounded-xl text-[10px] font-bold text-slate-400 hover:text-white transition-colors flex items-center justify-center gap-1.5"
-                   style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);">
-                    Lihat Semua ({{ $pendingReview }}) <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                </a>
+                <a href="{{ route('brand.submissions') }}" class="block rounded-xl p-4 border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="file-check-2" class="w-4 h-4 text-amber-400"></i>
+                        <span class="text-xs font-bold text-white">Review submission kreator</span>
+                    </div>
+                </a>
+                <a href="{{ route('brand.finance') }}" class="block rounded-xl p-4 border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="wallet" class="w-4 h-4 text-emerald-400"></i>
+                        <span class="text-xs font-bold text-white">Top-up saldo campaign</span>
+                    </div>
                 </a>
             </div>
-            
         </div>
     </div>
 
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var options = {
+            series: [{
+                name: 'Organic Views',
+                data: @json($chartData)
+            }],
+            chart: {
+                type: 'area',
+                height: 280,
+                toolbar: { show: false },
+                background: 'transparent',
+                fontFamily: 'inherit'
+            },
+            colors: ['#34d399'],
+            fill: {
+                type: 'gradient',
+                gradient: {
+                    shadeIntensity: 1,
+                    opacityFrom: 0.4,
+                    opacityTo: 0.05,
+                    stops: [0, 90, 100]
+                }
+            },
+            dataLabels: { enabled: false },
+            stroke: { curve: 'smooth', width: 3 },
+            xaxis: {
+                categories: @json($chartLabels),
+                axisBorder: { show: false },
+                axisTicks: { show: false },
+                labels: { style: { colors: '#64748b', fontSize: '10px', fontWeight: 600 } }
+            },
+            yaxis: {
+                labels: { 
+                    style: { colors: '#64748b', fontSize: '10px', fontWeight: 600 },
+                    formatter: function(val) {
+                        if(val >= 1000) return (val/1000).toFixed(1) + 'k';
+                        return val;
+                    }
+                }
+            },
+            grid: {
+                borderColor: 'rgba(255,255,255,0.05)',
+                strokeDashArray: 4,
+                yaxis: { lines: { show: true } }
+            },
+            theme: { mode: 'dark' },
+            tooltip: {
+                theme: 'dark',
+                y: { formatter: function (val) { return val.toLocaleString('id-ID') + " views" } }
+            }
+        };
+
+        var chart = new ApexCharts(document.querySelector("#viewsChart"), options);
+        chart.render();
+    });
+</script>
+@endpush

@@ -1,23 +1,20 @@
 <!-- ===== SIDEBAR KREATOR ===== -->
 <aside class="glass-sidebar fixed inset-y-0 left-0 z-40 w-64 flex flex-col transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 -translate-x-full" :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
 
-    <!-- Logo -->
     <div class="h-16 flex items-center px-5 border-b border-white/[0.05] flex-shrink-0">
         <a href="{{ route('kreator.dashboard') }}" class="flex items-center gap-3 group">
-            <div class="w-8 h-8 flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110">
-                <img src="{{ asset('images/brand/logo-icon.png') }}" alt="ClipHub" class="w-8 h-8 object-contain" style="filter: drop-shadow(0 0 10px rgba(16,185,129,0.5));">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center flex-shrink-0 shadow-[0_0_20px_rgba(52,211,153,0.3)] group-hover:shadow-[0_0_28px_rgba(52,211,153,0.5)] transition-shadow duration-300">
+                <i data-lucide="play" class="w-4 h-4 text-white fill-white"></i>
             </div>
             <div>
-                <h1 class="text-lg font-black text-white tracking-tight leading-none">Clip<span class="text-transparent bg-clip-text" style="background: linear-gradient(135deg, #10b981, #34d399); -webkit-background-clip: text;">Hub</span></h1>
+                <h1 class="text-lg font-extrabold text-white tracking-tight leading-none">Clip<span class="text-emerald-400">Hub</span></h1>
                 <p class="text-[9px] text-slate-600 font-semibold tracking-widest uppercase mt-0.5">Creator Space</p>
             </div>
         </a>
     </div>
 
-    <!-- Navigation -->
     <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
-
-        <span class="nav-section-label">Main Menu</span>
+        <span class="nav-section-label">Utama</span>
 
         <a href="{{ route('kreator.dashboard') }}" class="kreator-link {{ request()->routeIs('kreator.dashboard') ? 'active' : '' }}">
             <i data-lucide="layout-grid" class="w-4 h-4 flex-shrink-0"></i>
@@ -30,46 +27,37 @@
                 Cari Campaign
             </div>
             <span class="flex items-center gap-1 text-[9px] font-bold px-2 py-0.5 rounded-full" style="background: linear-gradient(135deg, #059669, #10b981); color: white; box-shadow: 0 0 8px rgba(16,185,129,0.3);">
-                <div class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></div>
                 {{ \App\Models\Campaign::where('status', 'active')->count() }}
             </span>
         </a>
 
-        <a href="{{ route('kreator.ai_tools') }}" class="kreator-link relative overflow-hidden group border border-transparent {{ request()->routeIs('kreator.ai_tools') ? 'active' : '' }}"
-           style="{{ request()->routeIs('kreator.ai_tools') ? 'border-color: rgba(16,185,129,0.2);' : 'hover:border-color: rgba(16,185,129,0.1);' }}">
+        <a href="{{ route('kreator.ai_clipper') }}" class="kreator-link relative overflow-hidden group border border-transparent {{ request()->routeIs('kreator.ai_clipper*') ? 'active' : '' }}">
             <div class="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
                  style="background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(52,211,153,0.04));"></div>
             <i data-lucide="sparkles" class="w-4 h-4 flex-shrink-0 text-emerald-400 relative z-10"></i>
             <span class="relative z-10 text-emerald-300 font-semibold group-hover:text-white transition-colors">AI Auto-Clipper</span>
         </a>
 
-        <span class="nav-section-label">Pekerjaan & Finance</span>
+        <span class="nav-section-label">Submission</span>
 
-        <!-- Dropdown: Tugas & Submit -->
-        <div x-data="{ open: {{ request()->routeIs('kreator.submissions*') ? 'true' : 'false' }} }">
-            <button @click="open = !open" class="w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium hover:text-white transition-all duration-200 {{ request()->routeIs('kreator.submissions*') ? 'text-white' : 'text-slate-400' }}">
-                <div class="flex items-center gap-3">
-                    <i data-lucide="upload-cloud" class="w-4 h-4 flex-shrink-0 {{ request()->routeIs('kreator.submissions*') ? 'text-brand' : '' }}"></i>
-                    Tugas & Submit
-                </div>
-                <i data-lucide="chevron-down" class="w-3.5 h-3.5 transition-transform duration-300 text-slate-600" :class="open ? 'rotate-180' : ''"></i>
-            </button>
-            <div x-show="open" x-collapse style="display: {{ request()->routeIs('kreator.submissions*') ? 'block' : 'none' }};">
-                <div class="ml-4 pl-4 mt-1 space-y-0.5" style="border-left: 1px solid rgba(255,255,255,0.05);">
-                    <a href="{{ route('kreator.submissions.create') }}" class="flex items-center py-2 px-2 text-xs font-semibold rounded-lg hover:text-brand transition-colors {{ request()->routeIs('kreator.submissions.create') ? 'text-brand' : 'text-slate-500' }}">Klaim Views (Submit Baru)</a>
-                    <a href="{{ route('kreator.submissions') }}" class="flex items-center py-2 px-2 text-xs font-semibold rounded-lg hover:text-white transition-colors {{ request()->routeIs('kreator.submissions.index') ? 'text-white' : 'text-slate-500' }}">Riwayat Submissions</a>
-                </div>
-            </div>
-        </div>
+        <a href="{{ route('kreator.submissions.create') }}" class="kreator-link {{ request()->routeIs('kreator.submissions.create') ? 'active' : '' }}">
+            <i data-lucide="upload-cloud" class="w-4 h-4 flex-shrink-0"></i>
+            Klaim Views
+        </a>
+
+        <a href="{{ route('kreator.submissions') }}" class="kreator-link {{ request()->routeIs('kreator.submissions') ? 'active' : '' }}">
+            <i data-lucide="history" class="w-4 h-4 flex-shrink-0"></i>
+            Riwayat Submission
+        </a>
+
+        <span class="nav-section-label">Keuangan</span>
 
         <a href="{{ route('kreator.finance') }}" class="kreator-link {{ request()->routeIs('kreator.finance*') ? 'active' : '' }}">
             <i data-lucide="wallet-cards" class="w-4 h-4 flex-shrink-0"></i>
             Wallet & Penarikan
         </a>
-
     </nav>
 
-    <!-- Logout Footer -->
     <div class="px-3 py-3 border-t border-white/[0.05]">
         <div class="flex items-center gap-3 px-3 py-2.5 rounded-xl mb-2" style="background: rgba(255,255,255,0.02);">
             <div class="w-7 h-7 rounded-lg flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
@@ -89,5 +77,4 @@
             </button>
         </form>
     </div>
-
 </aside>

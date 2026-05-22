@@ -14,17 +14,55 @@ class DashboardController extends Controller
         
         $balance = $user->balance ?? 0;
         
-        // Sum of budget for campaigns that are pending review
-        $escrow = $user->campaigns()->where('status', 'draft')->sum('budget'); // Replace draft with actual logic if needed later
-        
         // Active campaigns
         $campaigns = $user->campaigns()->latest()->take(5)->get();
         
-        // Let's assume some analytics for the top cards (mocked for now, until UGC feature is ready)
-        $totalViews = 0;
-        $totalUgc = 0;
-        $pendingReview = 0;
+        // Total Views: Only count views from Approved submissions
+        $totalViews = $user->campaigns()->with(['submissions' => function($q) {
+            $q->where('status', 'approved');
+        }])->get()->flatMap->submissions->sum('views_claimed');
 
-        return view('brand.dashboard.index', compact('user', 'balance', 'escrow', 'campaigns', 'totalViews', 'totalUgc', 'pendingReview'));
+        // Total UGC/Clips: Count of approved submissions
+        $totalUgc = $user->campaigns()->withCount(['submissions' => function($q) {
+            $q->where('status', 'approved');
+        }])->get()->sum('submissions_count');
+
+        // Pending Review
+        $pendingReview = $user->campaigns()->withCount(['submissions' => function($q) {
+            $q->where('status', 'pending');
+        }])->get()->sum('submissions_count');
+
+        // Canonical Escrow Calculation: Sum of Active Campaign Budgets MINUS Paid Rewards on Approved Submissions
+        $activeCampaigns = $user->campaigns()->where('status', 'active')->get();
+        $totalActiveBudget = $activeCampaigns->sum('budget');
+        
+        $totalPaidRewards = $activeCampaigns->flatMap(function ($campaign) {
+            return $campaign->submissions()->where('status', 'approved')->get();
+        })->sum('estimated_reward');
+
+        $escrow = max(0, $totalActiveBudget - $totalPaidRewards);
+
+        // Chart Data Generation: 7-day view trend
+        $chartData = [];
+        $chartLabels = [];
+        
+        for ($i = 6; $i >= 0; $i--) {
+            $date = \Carbon\Carbon::now()->subDays($i)->format('Y-m-d');
+            $chartLabels[] = \Carbon\Carbon::now()->subDays($i)->format('d M');
+            
+            $dailyViews = $user->campaigns()->with(['submissions' => function($q) use ($date) {
+                $q->where('status', 'approved')->whereDate('created_at', $date);
+            }])->get()->flatMap->submissions->sum('views_claimed');
+            
+            $chartData[] = $dailyViews;
+        }
+
+        $avgViews = $totalUgc > 0 ? round($totalViews / $totalUgc) : 0;
+
+        return view('brand.dashboard.index', compact(
+            'user', 'balance', 'escrow', 'campaigns', 
+            'totalViews', 'totalUgc', 'pendingReview',
+            'chartLabels', 'chartData', 'totalPaidRewards', 'avgViews'
+        ));
     }
 }

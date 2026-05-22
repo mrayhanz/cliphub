@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->enum('role', ['admin', 'kreator', 'brand'])->default('kreator');
+            $table->bigInteger('balance')->default(0);
+            $table->string('bank_name')->nullable();
+            $table->string('bank_account')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
