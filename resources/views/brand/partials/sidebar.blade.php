@@ -26,7 +26,12 @@
             Campaign Saya
         </a>
 
-        <a href="{{ route('brand.submissions') }}" class="brand-link {{ request()->routeIs('brand.submissions*') ? 'active' : '' }}">
+        <a href="{{ route('brand.campaigns.create') }}" class="brand-link {{ request()->routeIs('brand.campaigns.create') ? 'active' : '' }}">
+            <i data-lucide="plus-circle" class="w-4 h-4 flex-shrink-0"></i>
+            Buat Campaign
+        </a>
+
+        <a href="{{ route('brand.submissions.index') }}" class="brand-link {{ request()->routeIs('brand.submissions*') ? 'active' : '' }}">
             <i data-lucide="file-check-2" class="w-4 h-4 flex-shrink-0"></i>
             <span class="flex-1">Review Submission</span>
             <span class="badge-red text-[9px]">0</span>

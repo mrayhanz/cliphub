@@ -4,180 +4,148 @@ namespace App\Http\Controllers\Brand;
 
 use App\Http\Controllers\Controller;
 use App\Models\Submission;
+use App\Models\Campaign;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class SubmissionController extends Controller
 {
+    /**
+     * Display a listing of submissions for brand's campaigns
+     */
     public function index(Request $request)
     {
-        /** @var \App\Models\User $user */
-        $user = auth()->user();
+        $brandId = auth()->id();
 
-        // Base query for campaigns owned by the brand
-        $submissionsQuery = Submission::whereHas('campaign', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })->with(['campaign', 'user']);
+        // Get all campaigns owned by this brand
+        $campaignIds = Campaign::where('user_id', $brandId)->pluck('id');
 
-        // Base stats (across all submissions for this brand)
-        $statsQuery = Submission::whereHas('campaign', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        });
+        // Query submissions
+        $query = Submission::with(['user', 'campaign'])
+            ->whereIn('campaign_id', $campaignIds);
 
-        $pendingCount = (clone $statsQuery)->where('status', 'pending')->count();
-        $approvedCount = (clone $statsQuery)->where('status', 'approved')->count();
-        $rejectedCount = (clone $statsQuery)->where('status', 'rejected')->count();
-        $totalEstimatedReward = (clone $statsQuery)->where('status', 'approved')->sum('estimated_reward');
-
-        // Apply filters based on request tabs
-        $statusFilter = $request->input('status');
-        if ($statusFilter === 'pending') {
-            $submissionsQuery->where('status', 'pending');
-        } elseif ($statusFilter === 'completed') {
-            $submissionsQuery->whereIn('status', ['approved', 'rejected']);
-        }
-        
-        $search = $request->input('search');
-        if (!empty($search)) {
-            $submissionsQuery->where(function ($q) use ($search) {
-                $q->whereHas('campaign', function ($qc) use ($search) {
-                    $qc->where('title', 'like', "%{$search}%");
-                })->orWhereHas('user', function ($qu) use ($search) {
-                    $qu->where('name', 'like', "%{$search}%");
-                });
-            });
+        // Filter by status
+        if ($request->filled('status') && $request->status !== 'all') {
+            $query->where('status', $request->status);
         }
 
-        $currentSort = $request->query('sort', 'newest');
-        switch ($currentSort) {
-            case 'oldest':
-                $submissionsQuery->orderBy('submissions.created_at', 'asc');
-                break;
-            case 'reward_high':
-                $submissionsQuery->orderBy('estimated_reward', 'desc');
-                break;
-            case 'views_high':
-                $submissionsQuery->orderBy('current_views', 'desc');
-                break;
-            case 'name_asc':
-                $submissionsQuery->join('users', 'submissions.user_id', '=', 'users.id')
-                                 ->orderBy('users.name', 'asc')
-                                 ->select('submissions.*');
-                break;
-            case 'name_desc':
-                $submissionsQuery->join('users', 'submissions.user_id', '=', 'users.id')
-                                 ->orderBy('users.name', 'desc')
-                                 ->select('submissions.*');
-                break;
-            case 'newest':
-            default:
-                $submissionsQuery->orderBy('submissions.created_at', 'desc');
-                break;
-        }
+        $submissions = $query->latest()->paginate(15);
 
-        $submissions = $submissionsQuery->paginate(10);
-        
-        $filters = [
-            '' => ['label' => 'Semua', 'icon' => 'list'],
-            'pending' => ['label' => 'Menunggu', 'icon' => 'clock'],
-            'completed' => ['label' => 'Selesai', 'icon' => 'check-circle'],
+        // Statistics
+        $stats = [
+            'pending' => Submission::whereIn('campaign_id', $campaignIds)->where('status', 'pending_brand')->count(),
+            'approved' => Submission::whereIn('campaign_id', $campaignIds)->whereIn('status', ['approved_by_brand', 'approved_by_admin'])->count(),
+            'rejected' => Submission::whereIn('campaign_id', $campaignIds)->whereIn('status', ['rejected_by_brand', 'rejected_by_admin'])->count(),
+            'total_reward' => Submission::whereIn('campaign_id', $campaignIds)->where('status', 'pending_brand')->sum('estimated_reward'),
         ];
 
-        $sortOptions = [
-            'newest' => 'Terbaru',
-            'oldest' => 'Terlama',
-            'name_asc' => 'Nama Kreator (A-Z)',
-            'name_desc' => 'Nama Kreator (Z-A)',
-            'reward_high' => 'Reward Tertinggi',
-            'views_high' => 'Views Terbanyak',
-        ];
-
-        return view('brand.submissions.index', compact(
-            'submissions',
-            'pendingCount',
-            'approvedCount',
-            'rejectedCount',
-            'totalEstimatedReward',
-            'statusFilter',
-            'search',
-            'filters',
-            'sortOptions',
-            'currentSort'
-        ));
+        return view('brand.submissions.index', compact('submissions', 'stats'));
     }
 
+    /**
+     * Show submission details with proof
+     */
+    public function show(Submission $submission)
+    {
+        // Verify this submission belongs to brand's campaign
+        if ($submission->campaign->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized');
+        }
+
+        $submission->load(['user', 'campaign']);
+
+        return view('brand.submissions.show', compact('submission'));
+    }
+
+    /**
+     * Approve a submission (Brand approval - first level)
+     */
     public function approve(Submission $submission)
     {
-        /** @var \App\Models\User $user */
-        $user = auth()->user();
-
-        // Scoping / authorization check
-        if ($submission->campaign->user_id !== $user->id) {
-            abort(403, 'Unauthorized action.');
+        // Verify this submission belongs to brand's campaign
+        if ($submission->campaign->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized');
         }
 
-        // Idempotency check
-        if ($submission->status !== 'pending') {
-            return redirect()->back()->with('error', 'Submission ini sudah diproses sebelumnya.');
+        if ($submission->status !== 'pending_brand') {
+            return back()->with('error', 'Submission ini sudah diproses sebelumnya.');
         }
 
-        DB::transaction(function () use ($submission) {
-            $campaign = $submission->campaign;
-            
-            // Calculate reward: (views_claimed * price_per_1k) / 1000
-            $reward = ($submission->views_claimed * $campaign->price_per_1k) / 1000;
+        $campaign = $submission->campaign;
+        $reward = (int) round((float) $submission->estimated_reward);
 
-            // Enforce update
-            $submission->update([
-                'status' => 'approved',
-                'estimated_reward' => $reward,
-            ]);
+        // Check if campaign budget is sufficient
+        $remainingBudget = $campaign->budget - ($campaign->budget_spent ?? 0);
 
-            // Deposit to creator
-            $submission->user()->increment('balance', $reward);
-        });
+        if ($reward > $remainingBudget) {
+            return back()->with(
+                'error',
+                'Budget campaign tidak mencukupi! ' .
+                    'Reward submission: Rp ' . number_format($reward, 0, ',', '.') . ', ' .
+                    'Sisa budget: Rp ' . number_format($remainingBudget, 0, ',', '.') . '. ' .
+                    'Silakan top up budget campaign atau tolak submission ini.'
+            );
+        }
 
-        return redirect()->back()->with('success', 'Submission berhasil disetujui, dana escrow ditransfer ke dompet kreator.');
+        // Increment campaign budget_spent
+        $campaign->increment('budget_spent', $reward);
+
+        $submission->update([
+            'status' => 'approved_by_brand',
+            'rejection_reason' => null,
+            'rejected_by' => null,
+            'brand_approved_at' => now(),
+        ]);
+
+        return back()->with('success', 'Submission berhasil disetujui! Menunggu persetujuan admin untuk pencairan reward.');
     }
 
+    /**
+     * Reject a submission (Brand rejection)
+     */
     public function reject(Request $request, Submission $submission)
     {
-        /** @var \App\Models\User $user */
-        $user = auth()->user();
-
-        // Scoping / authorization check
-        if ($submission->campaign->user_id !== $user->id) {
-            abort(403, 'Unauthorized action.');
+        // Verify this submission belongs to brand's campaign
+        if ($submission->campaign->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized');
         }
 
-        // Idempotency check
-        if ($submission->status !== 'pending') {
-            return redirect()->back()->with('error', 'Submission ini sudah diproses sebelumnya.');
+        if ($submission->status !== 'pending_brand') {
+            return back()->with('error', 'Submission ini sudah diproses sebelumnya.');
         }
 
-        $request->validate([
-            'rejection_reason' => 'required|string|max:1000',
+        $validated = $request->validate([
+            'rejection_reason' => 'required|string|max:500',
         ]);
 
         $submission->update([
-            'status' => 'rejected',
-            'rejection_reason' => $request->input('rejection_reason'),
+            'status' => 'rejected_by_brand',
+            'rejection_reason' => $validated['rejection_reason'],
+            'rejected_by' => 'brand',
         ]);
 
-        return redirect()->back()->with('warning', 'Submission berhasil ditolak dengan alasan yang terlampir.');
+        return back()->with('success', 'Submission berhasil ditolak dengan alasan yang diberikan.');
     }
 
-    public function show(Submission $submission)
+    /**
+     * Get analytics proof image
+     */
+    public function getProof(Submission $submission)
     {
-        /** @var \App\Models\User $user */
-        $user = auth()->user();
-
-        // Scoping / authorization check
-        if ($submission->campaign->user_id !== $user->id) {
-            abort(403, 'Unauthorized action.');
+        // Verify this submission belongs to brand's campaign
+        if ($submission->campaign->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized');
         }
 
-        $submission->load(['campaign', 'user']);
-        return view('brand.submissions.show', compact('submission'));
+        if (!$submission->analytics_proof_path) {
+            abort(404, 'Bukti analytics tidak ditemukan');
+        }
+
+        $path = storage_path('app/public/' . $submission->analytics_proof_path);
+
+        if (!file_exists($path)) {
+            abort(404, 'File bukti tidak ditemukan');
+        }
+
+        return response()->file($path);
     }
 }

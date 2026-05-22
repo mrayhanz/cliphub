@@ -5,98 +5,105 @@ namespace App\Http\Controllers\Brand;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Campaign;
+use App\Models\Transaction;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class CampaignController extends Controller
 {
     public function index(Request $request)
     {
+        $filter = $request->query('status', 'all');
+        if (!in_array($filter, ['all', 'active', 'completed', 'draft'], true)) {
+            $filter = 'all';
+        }
+
+        $search = trim((string) $request->query('q', ''));
+
         /** @var \App\Models\User $user */
         $user = auth()->user();
-        
-        $query = $user->campaigns();
-        
-        $status = $request->query('status');
-        $search = $request->query('search');
-        
-        if ($status && in_array($status, ['active', 'completed', 'draft', 'cancelled'])) {
-            $query->where('status', $status);
-        }
-        
-        if ($search) {
-            $query->where(function($q) use ($search) {
-                $q->where('title', 'like', '%' . $search . '%')
-                  ->orWhere('desc', 'like', '%' . $search . '%');
-            });
-        }
-        
-        $currentSort = $request->query('sort', 'newest');
-        switch ($currentSort) {
-            case 'oldest':
-                $query->orderBy('created_at', 'asc');
-                break;
-            case 'budget_high':
-                $query->orderBy('budget', 'desc');
-                break;
-            case 'budget_low':
-                $query->orderBy('budget', 'asc');
-                break;
-            case 'name_asc':
-                $query->orderBy('title', 'asc');
-                break;
-            case 'name_desc':
-                $query->orderBy('title', 'desc');
-                break;
-            case 'newest':
-            default:
-                $query->orderBy('created_at', 'desc');
-                break;
-        }
-        
-        $campaigns = $query->paginate(6);
-        
-        $filters = [
-            '' => ['label' => 'Semua', 'icon' => 'list'],
-            'active' => ['label' => 'Aktif', 'icon' => 'zap'],
-            'completed' => ['label' => 'Selesai', 'icon' => 'check-circle'],
-            'draft' => ['label' => 'Draft', 'icon' => 'file-edit'],
-            'cancelled' => ['label' => 'Dibatalkan', 'icon' => 'x-circle'],
+        Campaign::syncExpiredCampaigns($user->id);
+
+        $baseQuery = $user->campaigns();
+
+        $counts = [
+            'all' => (clone $baseQuery)->count(),
+            'active' => (clone $baseQuery)->effectivelyActive()->count(),
+            'completed' => (clone $baseQuery)->effectivelyCompleted()->count(),
+            'draft' => (clone $baseQuery)->where('status', 'draft')->count(),
         ];
 
-        $sortOptions = [
-            'newest' => 'Terbaru',
-            'oldest' => 'Terlama',
-            'name_asc' => 'Nama (A-Z)',
-            'name_desc' => 'Nama (Z-A)',
-            'budget_high' => 'Budget Tertinggi',
-            'budget_low' => 'Budget Terendah',
-        ];
+        $campaigns = $baseQuery
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where('title', 'like', '%' . $search . '%');
+            })
+            ->when($filter === 'active', function ($query) {
+                $query->effectivelyActive();
+            })
+            ->when($filter === 'completed', function ($query) {
+                $query->effectivelyCompleted();
+            })
+            ->when($filter === 'draft', function ($query) {
+                $query->where('status', 'draft');
+            })
+            ->latest()
+            ->get();
 
-        return view('brand.campaigns.index', compact('campaigns', 'status', 'search', 'filters', 'sortOptions', 'currentSort'));
+        return view('brand.campaigns.index', compact('campaigns', 'filter', 'search', 'counts'));
+    }
+
+    public function show($id)
+    {
+        $campaign = Campaign::where('user_id', auth()->id())->findOrFail($id);
+        return view('brand.campaigns.show', compact('campaign'));
     }
 
     public function create()
     {
-        return view('brand.campaigns.create');
+        $balance = auth()->user()->balance ?? 0;
+
+        return view('brand.campaigns.create', compact('balance'));
+    }
+
+    public function edit($id)
+    {
+        $campaign = Campaign::where('user_id', auth()->id())
+            ->withCount('submissions')
+            ->findOrFail($id);
+
+        if ($campaign->effective_status === 'completed') {
+            return redirect()
+                ->route('brand.campaigns')
+                ->with('error', 'Campaign yang sudah selesai tidak bisa diedit.');
+        }
+
+        return view('brand.campaigns.edit', compact('campaign'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'type' => 'required|string|in:video,clip',
-            'slots' => 'required|integer|min:1',
-            'thumbnail' => 'required|image|mimes:jpeg,png,jpg|max:5120', // 5MB max
-            'desc' => 'required|string',
-            'full_brief' => 'required|string',
-            'donts' => 'required|string',
+        $status = $request->input('action') === 'active' ? 'active' : 'draft';
+        $todayWib = Campaign::todayWib();
+
+        $rules = [
+            'title' => ($status === 'active' ? 'required' : 'nullable') . '|string|max:255',
+            'type' => ($status === 'active' ? 'required' : 'nullable') . '|string|in:video,clip',
+            'slots' => ($status === 'active' ? 'required' : 'nullable') . '|integer|min:1',
+            'thumbnail' => ($status === 'active' ? 'required' : 'nullable') . '|image|mimes:jpeg,png,jpg|max:5120',
+            'desc' => ($status === 'active' ? 'required' : 'nullable') . '|string',
+            'full_brief' => ($status === 'active' ? 'required' : 'nullable') . '|string',
+            'donts' => ($status === 'active' ? 'required' : 'nullable') . '|string',
             'assets_url' => 'nullable|url',
-            'deadline' => 'required|date',
-            'video_length' => 'required|string|max:50',
-            'link' => 'required|url',
-            'platform' => 'required|string',
-            'budget' => 'required|numeric|min:0',
-            'price_per_1k' => 'required|numeric|min:0',
+            'deadline' => ($status === 'active' ? 'required' : 'nullable') . '|date|after_or_equal:' . $todayWib,
+            'video_length' => ($status === 'active' ? 'required' : 'nullable') . '|string|max:50',
+            'link' => ($status === 'active' ? 'required' : 'nullable') . '|url',
+            'platform' => ($status === 'active' ? 'required' : 'nullable') . '|string',
+            'budget' => ($status === 'active' ? 'required' : 'nullable') . '|numeric|min:0',
+            'price_per_1k' => ($status === 'active' ? 'required' : 'nullable') . '|numeric|min:0',
+        ];
+
+        $validated = $request->validate($rules, [
+            'deadline.after_or_equal' => 'Deadline tidak boleh lebih awal dari tanggal hari ini (WIB).',
         ]);
 
         $thumbnailPath = null;
@@ -104,94 +111,205 @@ class CampaignController extends Controller
             $thumbnailPath = $request->file('thumbnail')->store('campaigns', 'public');
         }
 
-        // Determine status based on action button
-        $status = $request->input('action') === 'active' ? 'active' : 'draft';
-
         /** @var \App\Models\User $user */
         $user = auth()->user();
+        $budget = (int) ($validated['budget'] ?? 0);
 
-        // Escrow Validation: check if user has enough balance for active campaigns
-        if ($status === 'active' && $user->balance < $request->budget) {
-            return back()->withInput()->withErrors(['budget' => 'Saldo akun Anda tidak mencukupi untuk meluncurkan campaign ini. Silakan top-up terlebih dahulu.']);
+        if ($status === 'active' && $budget > 0 && $user->balance < $budget) {
+            if ($thumbnailPath) {
+                Storage::disk('public')->delete($thumbnailPath);
+            }
+
+            return back()
+                ->withInput()
+                ->withErrors(['budget' => 'Saldo deposit tidak mencukupi untuk menahan escrow campaign ini. Silakan top up terlebih dahulu.']);
         }
 
-        $campaign = $user->campaigns()->create([
-            'title' => $request->title,
-            'type' => $request->type,
-            'slots' => $request->slots,
-            'thumbnail' => $thumbnailPath,
-            'desc' => $request->desc,
-            'full_brief' => $request->full_brief,
-            'donts' => $request->donts,
-            'assets_url' => $request->assets_url,
-            'deadline' => $request->deadline,
-            'video_length' => $request->video_length,
-            'link' => $request->link,
-            'platform' => $request->platform,
-            'budget' => $request->budget,
-            'price_per_1k' => $request->price_per_1k,
-            'status' => $status,
-        ]);
+        DB::transaction(function () use ($user, $validated, $thumbnailPath, $status, $budget) {
+            if ($status === 'active' && $budget > 0) {
+                $user->decrement('balance', $budget);
+            }
 
-        // Secure Escrow: Deduct budget from user's balance
-        if ($status === 'active') {
-            $user->decrement('balance', $request->budget);
-        }
+            $campaign = $user->campaigns()->create([
+                'title' => $validated['title'] ?? 'Draft Campaign',
+                'type' => $validated['type'] ?? 'video',
+                'slots' => $validated['slots'] ?? 0,
+                'thumbnail' => $thumbnailPath,
+                'desc' => $validated['desc'] ?? null,
+                'full_brief' => $validated['full_brief'] ?? null,
+                'donts' => $validated['donts'] ?? null,
+                'assets_url' => $validated['assets_url'] ?? null,
+                'deadline' => $validated['deadline'] ?? null,
+                'video_length' => $validated['video_length'] ?? null,
+                'link' => $validated['link'] ?? null,
+                'platform' => $validated['platform'] ?? 'all',
+                'budget' => $budget,
+                'escrow_amount' => $status === 'active' ? $budget : 0,
+                'price_per_1k' => $validated['price_per_1k'] ?? 0,
+                'status' => $status,
+            ]);
+
+            // Catat transaksi escrow jika campaign langsung aktif
+            if ($status === 'active' && $budget > 0) {
+                Transaction::create([
+                    'user_id'        => $user->id,
+                    'type'           => Transaction::TYPE_ESCROW_HOLD,
+                    'amount'         => -$budget,
+                    'description'    => 'Escrow ditahan untuk campaign: ' . $campaign->title,
+                    'reference_type' => 'campaign',
+                    'reference_id'   => $campaign->id,
+                    'balance_after'  => $user->fresh()->balance,
+                ]);
+            }
+        });
 
         return redirect()->route('brand.campaigns')->with('success', 'Campaign berhasil ' . ($status === 'active' ? 'diluncurkan!' : 'disimpan sebagai draft.'));
     }
 
-    public function activate(Campaign $campaign)
+    public function update(Request $request, $id)
     {
-        abort_unless($campaign->user_id === auth()->id(), 403);
-        abort_unless($campaign->status === 'draft', 400);
+        $todayWib = Campaign::todayWib();
 
-        /** @var \App\Models\User $user */
-        $user = auth()->user();
+        $campaign = Campaign::where('user_id', auth()->id())
+            ->withCount('submissions')
+            ->findOrFail($id);
 
-        if ($user->balance < $campaign->budget) {
-            return back()->with('error', 'Saldo akun Anda tidak mencukupi untuk meluncurkan campaign ini. Silakan top-up terlebih dahulu.');
+        if ($campaign->effective_status === 'completed') {
+            return redirect()
+                ->route('brand.campaigns')
+                ->with('error', 'Campaign yang sudah selesai tidak bisa diedit.');
         }
 
-        $user->decrement('balance', $campaign->budget);
-        $campaign->update(['status' => 'active']);
+        $hasSubmissions = $campaign->submissions_count > 0;
 
-        return redirect()->route('brand.campaigns')->with('success', 'Campaign berhasil diluncurkan!');
-    }
+        $rules = [
+            'title' => 'required|string|max:255',
+            'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+            'desc' => 'required|string',
+            'full_brief' => 'required|string',
+            'donts' => 'required|string',
+            'assets_url' => 'nullable|url',
+            'deadline' => 'required|date|after_or_equal:' . $todayWib,
+            'video_length' => 'required|string|max:50',
+            'link' => 'required|url',
+            'platform' => 'required|string',
+        ];
 
-    public function cancel(Campaign $campaign)
-    {
-        abort_unless($campaign->user_id === auth()->id(), 403);
-        $abort_in_array = ['cancelled', 'completed'];
-        abort_if(in_array($campaign->status, $abort_in_array), 400);
-
-        /** @var \App\Models\User $user */
-        $user = auth()->user();
-
-        // If it was active, refund escrow budget
-        if ($campaign->status === 'active') {
-            $user->increment('balance', $campaign->budget);
+        if (!$hasSubmissions && $campaign->status === 'draft') {
+            $rules += [
+                'type' => 'required|string|in:video,clip',
+                'slots' => 'required|integer|min:1',
+                'budget' => 'required|numeric|min:0',
+                'price_per_1k' => 'required|numeric|min:0',
+            ];
         }
 
-        $campaign->update(['status' => 'cancelled']);
+        $validated = $request->validate($rules, [
+            'deadline.after_or_equal' => 'Deadline tidak boleh lebih awal dari tanggal hari ini (WIB).',
+        ]);
 
-        return redirect()->route('brand.campaigns')->with('success', 'Campaign berhasil dibatalkan!');
+        if ($request->hasFile('thumbnail')) {
+            if ($campaign->thumbnail) {
+                Storage::disk('public')->delete($campaign->thumbnail);
+            }
+
+            $validated['thumbnail'] = $request->file('thumbnail')->store('campaigns', 'public');
+        }
+
+        if (!$hasSubmissions && $campaign->status === 'draft') {
+            $nextStatus = $request->input('action') === 'active' ? 'active' : 'draft';
+            $nextBudget = (int) ($validated['budget'] ?? 0);
+
+            if ($nextStatus === 'active' && $nextBudget > 0 && auth()->user()->balance < $nextBudget) {
+                if (isset($validated['thumbnail'])) {
+                    Storage::disk('public')->delete($validated['thumbnail']);
+                }
+
+                return back()
+                    ->withInput()
+                    ->withErrors(['budget' => 'Saldo deposit tidak mencukupi untuk menahan escrow campaign ini. Silakan top up terlebih dahulu.']);
+            }
+
+            $validated['status'] = $nextStatus;
+            $validated['escrow_amount'] = $nextStatus === 'active' ? $nextBudget : 0;
+        } else {
+            unset($validated['type'], $validated['slots'], $validated['budget'], $validated['price_per_1k']);
+        }
+
+        DB::transaction(function () use ($campaign, $validated, $hasSubmissions) {
+            $shouldHoldEscrow = !$hasSubmissions
+                && $campaign->status === 'draft'
+                && ($validated['status'] ?? null) === 'active'
+                && (int) ($validated['escrow_amount'] ?? 0) > 0;
+
+            if ($shouldHoldEscrow) {
+                $escrowAmount = (int) $validated['escrow_amount'];
+                $user = auth()->user();
+                $user->decrement('balance', $escrowAmount);
+
+                // Catat transaksi escrow saat draft diaktifkan
+                Transaction::create([
+                    'user_id'        => $user->id,
+                    'type'           => Transaction::TYPE_ESCROW_HOLD,
+                    'amount'         => -$escrowAmount,
+                    'description'    => 'Escrow ditahan untuk campaign: ' . $campaign->title,
+                    'reference_type' => 'campaign',
+                    'reference_id'   => $campaign->id,
+                    'balance_after'  => $user->fresh()->balance,
+                ]);
+            }
+
+            $campaign->update($validated);
+        });
+
+        return redirect()
+            ->route('brand.campaigns')
+            ->with('success', 'Campaign berhasil diperbarui.');
     }
 
-    public function complete(Campaign $campaign)
+    public function destroy($id)
     {
-        abort_unless($campaign->user_id === auth()->id(), 403);
-        abort_unless($campaign->status === 'active', 400);
+        $campaign = Campaign::where('user_id', auth()->id())
+            ->withCount('submissions')
+            ->findOrFail($id);
 
-        $campaign->update(['status' => 'completed']);
+        if ($campaign->effective_status === 'completed') {
+            return back()->with('error', 'Campaign yang sudah selesai tidak bisa dihapus.');
+        }
 
-        return redirect()->route('brand.campaigns')->with('success', 'Campaign telah selesai!');
-    }
+        if ($campaign->submissions_count > 0) {
+            return back()->with('error', 'Campaign yang sudah memiliki submission tidak bisa dihapus. Simpan sebagai arsip riwayat.');
+        }
 
-    public function show(Campaign $campaign)
-    {
-        abort_unless($campaign->user_id === auth()->id(), 403);
-        $campaign->load(['submissions.user']);
-        return view('brand.campaigns.show', compact('campaign'));
+        if ($campaign->thumbnail) {
+            Storage::disk('public')->delete($campaign->thumbnail);
+        }
+
+        DB::transaction(function () use ($campaign) {
+            $refund = $campaign->escrow_held;
+            $user   = $campaign->user;
+
+            if ($refund > 0) {
+                $user->increment('balance', $refund);
+                $campaign->increment('escrow_refunded', $refund);
+
+                // Catat transaksi refund escrow saat campaign dihapus
+                Transaction::create([
+                    'user_id'        => $user->id,
+                    'type'           => Transaction::TYPE_ESCROW_REFUND,
+                    'amount'         => $refund,
+                    'description'    => 'Refund escrow dari penghapusan campaign: ' . $campaign->title,
+                    'reference_type' => 'campaign',
+                    'reference_id'   => $campaign->id,
+                    'balance_after'  => $user->fresh()->balance,
+                ]);
+            }
+
+            $campaign->delete();
+        });
+
+        return redirect()
+            ->route('brand.campaigns')
+            ->with('success', 'Campaign berhasil dihapus.');
     }
 }

@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Models\Deposit;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
 
 class FinanceController extends Controller
 {
@@ -19,74 +18,18 @@ class FinanceController extends Controller
         \Midtrans\Config::$is3ds = config('midtrans.is_3ds');
     }
 
-    public function index(Request $request)
+    public function index()
     {
         /** @var \App\Models\User $user */
         $user = auth()->user();
+        $deposits = $user->deposits()->orderBy('created_at', 'desc')->get();
         
-        $depositsQuery = $user->deposits();
-        
-        $status = $request->input('status');
-        if ($status) {
-            $depositsQuery->where('status', $status);
-        }
-        
-        $search = $request->input('search');
-        if (!empty($search)) {
-            $depositsQuery->where(function($q) use ($search) {
-                $q->where('order_id', 'like', "%{$search}%")
-                  ->orWhere('amount', 'like', "%{$search}%");
-            });
-        }
-        
-        $currentSort = $request->query('sort', 'newest');
-        switch ($currentSort) {
-            case 'oldest':
-                $depositsQuery->orderBy('created_at', 'asc');
-                break;
-            case 'amount_high':
-                $depositsQuery->orderBy('amount', 'desc');
-                break;
-            case 'amount_low':
-                $depositsQuery->orderBy('amount', 'asc');
-                break;
-            case 'name_asc':
-                $depositsQuery->orderBy('order_id', 'asc');
-                break;
-            case 'name_desc':
-                $depositsQuery->orderBy('order_id', 'desc');
-                break;
-            case 'newest':
-            default:
-                $depositsQuery->orderBy('created_at', 'desc');
-                break;
-        }
-
-        $deposits = $depositsQuery->paginate(10);
-        
-        // Count total escrow and available balance
         $balance = $user->balance ?? 0;
-        $escrow = $user->campaigns()->where('status', 'active')->sum('budget');
-        $activeCampaigns = $user->campaigns()->where('status', 'active')->orderBy('created_at', 'desc')->get();
-        
-        $filters = [
-            '' => ['label' => 'Semua', 'icon' => 'list'],
-            'success' => ['label' => 'Berhasil', 'icon' => 'check-circle'],
-            'pending' => ['label' => 'Menunggu', 'icon' => 'clock'],
-            'expired' => ['label' => 'Kedaluwarsa', 'icon' => 'alert-circle'],
-            'failed' => ['label' => 'Gagal', 'icon' => 'x-circle'],
-        ];
+        $escrow = $user->campaigns()
+            ->get()
+            ->sum(fn($campaign) => $campaign->escrow_held);
 
-        $sortOptions = [
-            'newest' => 'Terbaru',
-            'oldest' => 'Terlama',
-            'name_asc' => 'Order ID (A-Z)',
-            'name_desc' => 'Order ID (Z-A)',
-            'amount_high' => 'Nominal Tertinggi',
-            'amount_low' => 'Nominal Terendah',
-        ];
-
-        return view('brand.finance.index', compact('user', 'deposits', 'balance', 'escrow', 'activeCampaigns', 'status', 'search', 'filters', 'sortOptions', 'currentSort'));
+        return view('brand.finance.index', compact('user', 'deposits', 'balance', 'escrow'));
     }
 
     public function topup(Request $request)
@@ -143,30 +86,26 @@ class FinanceController extends Controller
         // This is a manual fallback for localhost environments where Midtrans Webhook cannot reach
         $request->validate(['order_id' => 'required']);
         
-        $response = DB::transaction(function () use ($request) {
-            $deposit = Deposit::where('order_id', $request->order_id)->lockForUpdate()->first();
-            if (!$deposit) {
-                return response()->json(['status' => 'error', 'message' => 'Deposit not found'], 404);
+        $deposit = Deposit::where('order_id', $request->order_id)->first();
+        if (!$deposit) {
+            return response()->json(['status' => 'error', 'message' => 'Deposit not found'], 404);
+        }
+
+        // Only update if it's currently pending.
+        if ($deposit->status === 'pending') {
+            $deposit->update([
+                'status' => 'success',
+                'payment_type' => $request->payment_type ?? 'midtrans_gateway'
+            ]);
+            
+            // Update user balance
+            $user = User::find($deposit->user_id);
+            if ($user) {
+                $user->increment('balance', $deposit->amount);
             }
+        }
 
-            // Only update if it's currently pending.
-            if ($deposit->status === 'pending') {
-                $deposit->update([
-                    'status' => 'success',
-                    'payment_type' => $request->payment_type ?? 'midtrans_gateway'
-                ]);
-                
-                // Update user balance
-                $user = User::where('id', $deposit->user_id)->lockForUpdate()->first();
-                if ($user) {
-                    $user->increment('balance', $deposit->amount);
-                }
-            }
-
-            return response()->json(['status' => 'success']);
-        });
-
-        return $response;
+        return response()->json(['status' => 'success']);
     }
 
     // Midtrans Webhook (Called server-to-server)
@@ -183,39 +122,33 @@ class FinanceController extends Controller
         $transactionStatus = $request->transaction_status;
         $orderId = $request->order_id;
 
-        $response = DB::transaction(function () use ($orderId, $transactionStatus, $request) {
-            $deposit = Deposit::where('order_id', $orderId)->lockForUpdate()->first();
-            if (!$deposit) {
-                return response()->json(['message' => 'Deposit not found'], 404);
+        $deposit = Deposit::where('order_id', $orderId)->first();
+        if (!$deposit) {
+            return response()->json(['message' => 'Deposit not found'], 404);
+        }
+
+        // If transaction already success, just ignore
+        if ($deposit->status === 'success') {
+            return response()->json(['message' => 'Already updated']);
+        }
+
+        if ($transactionStatus == 'capture' || $transactionStatus == 'settlement') {
+            $deposit->update([
+                'status' => 'success',
+                'payment_type' => $request->payment_type
+            ]);
+            
+            // Update user balance
+            $user = User::find($deposit->user_id);
+            if ($user) {
+                $user->increment('balance', $deposit->amount);
             }
+        } elseif ($transactionStatus == 'cancel' || $transactionStatus == 'deny' || $transactionStatus == 'expire') {
+            $deposit->update(['status' => 'failed']);
+        } elseif ($transactionStatus == 'pending') {
+            $deposit->update(['status' => 'pending']);
+        }
 
-            // If transaction already success, just ignore
-            if ($deposit->status === 'success') {
-                return response()->json(['message' => 'Already updated']);
-            }
-
-            if ($transactionStatus == 'capture' || $transactionStatus == 'settlement') {
-                $deposit->update([
-                    'status' => 'success',
-                    'payment_type' => $request->payment_type
-                ]);
-                
-                // Update user balance
-                $user = User::where('id', $deposit->user_id)->lockForUpdate()->first();
-                if ($user) {
-                    $user->increment('balance', $deposit->amount);
-                }
-            } elseif ($transactionStatus == 'cancel' || $transactionStatus == 'deny') {
-                $deposit->update(['status' => 'failed']);
-            } elseif ($transactionStatus == 'expire') {
-                $deposit->update(['status' => 'expired']);
-            } elseif ($transactionStatus == 'pending') {
-                $deposit->update(['status' => 'pending']);
-            }
-
-            return response()->json(['message' => 'OK']);
-        });
-
-        return $response;
+        return response()->json(['message' => 'OK']);
     }
 }
