@@ -23,7 +23,7 @@
 
         <div class="pt-4 pb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-700">Operasional Inti</div>
 
-        <a href="{{ route('admin.submissions') }}" class="sidebar-link {{ request()->routeIs('admin.submissions*') ? 'active' : '' }}">
+        <a href="{{ route('admin.submissions.index') }}" class="sidebar-link {{ request()->routeIs('admin.submissions*') ? 'active' : '' }}">
             <i data-lucide="file-check-2" class="w-4 h-4 flex-shrink-0"></i>
             <span class="flex-1">Review Submission</span>
             <span class="badge-red text-[9px]">12</span>
@@ -40,14 +40,14 @@
             Campaign
         </a>
 
-        <a href="{{ route('admin.payouts') }}" class="sidebar-link {{ request()->routeIs('admin.payouts*') ? 'active' : '' }}">
+        <a href="{{ route('admin.transactions.index') }}" class="sidebar-link {{ request()->routeIs('admin.transactions*') ? 'active' : '' }}">
             <i data-lucide="wallet-cards" class="w-4 h-4 flex-shrink-0"></i>
-            Transaksi & Escrow
+            Transaksi &amp; Escrow
         </a>
 
         <div class="pt-4 pb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-700">Pengguna</div>
 
-        <a href="{{ route('admin.users') }}" class="sidebar-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}">
+        <a href="{{ route('admin.users.index') }}" class="sidebar-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}">
             <i data-lucide="users" class="w-4 h-4 flex-shrink-0"></i>
             Semua Pengguna
         </a>
