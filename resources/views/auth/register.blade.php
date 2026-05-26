@@ -57,7 +57,7 @@
             <p class="text-zinc-500 text-sm mb-8">Bergabung dengan ekosistem kreator & brand terbesar.</p>
 
             <!-- Form -->
-            <form action="#" method="POST" class="space-y-4" x-data="{ role: 'creator' }">
+            <form action="{{ route('register.store') }}" method="POST" class="space-y-4" x-data="{ role: 'kreator' }">
                 @csrf
 
                 <!-- Pilihan Role -->
@@ -65,7 +65,7 @@
                     <label class="block text-[13px] font-medium text-zinc-400 mb-2">Daftar Sebagai</label>
                     <div class="grid grid-cols-2 gap-2 p-1 bg-white/[0.02] rounded-xl border border-white/[0.05]">
                         <label class="relative cursor-pointer">
-                            <input type="radio" name="role" value="creator" x-model="role" class="peer sr-only">
+                            <input type="radio" name="role" value="kreator" x-model="role" class="peer sr-only">
                             <div class="py-2.5 text-center text-[13px] font-semibold rounded-lg text-zinc-500 transition-all duration-200 peer-checked:bg-emerald-400 peer-checked:text-black peer-checked:shadow-[0_0_16px_rgba(52,211,153,0.2)] hover:text-zinc-300 flex items-center justify-center gap-1.5">
                                 <i data-lucide="clapperboard" class="w-3.5 h-3.5"></i> Kreator
                             </div>
@@ -115,7 +115,7 @@
 
                 <!-- Submit -->
                 <div class="pt-1">
-                    <button type="submit" x-show="role === 'creator'"
+                    <button type="submit" x-show="role === 'kreator'"
                         class="w-full flex justify-center items-center gap-2 py-3 rounded-xl text-sm font-bold text-black bg-emerald-400 hover:bg-emerald-300 transition-all duration-200 shadow-[0_0_24px_rgba(52,211,153,0.2)] hover:shadow-[0_0_32px_rgba(52,211,153,0.35)] active:scale-[0.98]">
                         Daftar Sebagai Kreator <i data-lucide="arrow-right" class="w-4 h-4"></i>
                     </button>
