@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Campaign;
+use App\Models\Deposit;
 
 class User extends Authenticatable
 {
@@ -19,6 +21,8 @@ class User extends Authenticatable
         'balance',
         'bank_name',
         'bank_account',
+        'google_id',
+        'avatar',
     ];
 
     protected $hidden = [
@@ -57,5 +61,10 @@ class User extends Authenticatable
     public function deposits()
     {
         return $this->hasMany(Deposit::class);
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany('App\\Models\\Transaction');
     }
 }
