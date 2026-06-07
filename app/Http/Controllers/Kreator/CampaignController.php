@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Kreator;
 
 use App\Http\Controllers\Controller;
+use App\Models\Campaign;
+use App\Models\CampaignParticipant;
 use Illuminate\Http\Request;
 
 class CampaignController extends Controller
 {
-    private function mapCampaignToViewArray($campaign)
+    private function mapCampaignToViewArray($campaign, int $userId = 0)
     {
         $statusText = 'TERSEDIA';
         $statusCls = 's-green';
@@ -29,12 +31,12 @@ class CampaignController extends Controller
         }
 
         $brandName = $campaign->user ? $campaign->user->name : 'Unknown';
-        
+
         return [
             'id'         => $campaign->id,
             'brand'      => $brandName,
             'initial'    => strtoupper(substr($brandName, 0, 1)),
-            'dotColor'   => $campaign->type === 'clip' ? '#10b981' : '#f97316', // mock colors based on type
+            'dotColor'   => $campaign->type === 'clip' ? '#10b981' : '#f97316',
             'category'   => $campaign->type === 'clip' ? 'Content Clip' : 'User Generated Content',
             'type'       => $campaign->type,
             'title'      => $campaign->title,
@@ -49,20 +51,21 @@ class CampaignController extends Controller
             'image'      => $campaign->thumbnail_url,
             'cover'      => $campaign->thumbnail_url,
             'full'       => $isFull,
+            'is_joined'  => $userId ? $campaign->isJoinedBy($userId) : false,
         ];
     }
 
     public function index()
     {
-        $campaignsData = \App\Models\Campaign::with('user')
-            ->where('status', 'active')
+        $campaignsData = Campaign::with('user')
+            ->claimable()
             ->latest()
             ->get();
 
+        $userId = auth()->id();
         $campaigns = [];
         foreach ($campaignsData as $c) {
-            $mapped = $this->mapCampaignToViewArray($c);
-            $campaigns[] = $mapped;
+            $campaigns[] = $this->mapCampaignToViewArray($c, $userId);
         }
 
         return view('kreator.campaigns.index', compact('campaigns'));
@@ -70,10 +73,42 @@ class CampaignController extends Controller
 
     public function show($id)
     {
-        $c = \App\Models\Campaign::with('user')->findOrFail($id);
-        
-        $campaign = $this->mapCampaignToViewArray($c);
-        
+        $c = Campaign::with('user')->claimable()->findOrFail($id);
+
+        $campaign = $this->mapCampaignToViewArray($c, auth()->id());
+
         return view('kreator.campaigns.show', compact('campaign'));
+    }
+
+    /**
+     * Proses Kreator bergabung ke campaign (menyimpan ke database)
+     */
+    public function join(Request $request, $id)
+    {
+        $campaign = Campaign::claimable()->findOrFail($id);
+        $userId = auth()->id();
+
+        // Cek apakah sudah bergabung sebelumnya
+        $alreadyJoined = CampaignParticipant::where('campaign_id', $campaign->id)
+            ->where('user_id', $userId)
+            ->exists();
+
+        if ($alreadyJoined) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anda sudah bergabung di campaign ini sebelumnya.',
+            ], 409);
+        }
+
+        CampaignParticipant::create([
+            'campaign_id' => $campaign->id,
+            'user_id'     => $userId,
+            'joined_at'   => now(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil bergabung! Kamu sekarang bisa mulai mengerjakan campaign ini.',
+        ]);
     }
 }
