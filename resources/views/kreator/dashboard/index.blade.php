@@ -12,7 +12,7 @@
             <div class="flex-1">
                 <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold mb-3" style="background: rgba(16,185,129,0.15); border: 1px solid rgba(16,185,129,0.25); color: #34d399;">
                     <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></div>
-                    Creator Active
+                    Kreator Aktif
                 </div>
                 <h1 class="text-xl lg:text-2xl font-black text-white tracking-tight leading-snug">
                     Halo, {{ auth()->user()->name }}

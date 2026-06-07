@@ -20,7 +20,7 @@ class DashboardController extends Controller
         foreach ($campaignsData as $c) {
             $brandName = $c->user ? $c->user->name : 'Unknown';
             
-            // Generate visual style based on campaign type
+            // Menghasilkan gaya visual berdasarkan jenis kampanye
             if ($c->type === 'clip') {
                 $dotColor = '#10b981';
                 $bgAlpha = 'rgba(16,185,129,0.05)';
@@ -44,7 +44,7 @@ class DashboardController extends Controller
             ];
         }
 
-        // Statistics User
+        // Pengguna Statistik
         $user = auth()->user();
         $stats = [
             'active_campaigns' => Campaign::where('status', 'active')->count(),
