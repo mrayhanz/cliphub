@@ -27,14 +27,8 @@
             <span class="ml-auto text-[9px] px-1.5 py-0.5 rounded-md font-mono font-bold text-slate-700" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.05);">⌘K</span>
         </div>
 
-        <!-- Notifications -->
-        <button class="relative w-9 h-9 flex items-center justify-center rounded-xl text-slate-400 hover:text-white transition-all duration-200 group"
-                style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);">
-            <i data-lucide="bell" class="w-4 h-4 group-hover:scale-110 transition-transform"></i>
-            <!-- Badge -->
-            <span class="absolute top-2 right-2 w-1.5 h-1.5 rounded-full animate-pulse"
-                  style="background: #10b981; box-shadow: 0 0 8px rgba(16,185,129,0.8);"></span>
-        </button>
+        {{-- Notifications Dropdown --}}
+        @include('partials.notification-dropdown')
 
         <!-- Avatar -->
         <div class="w-9 h-9 rounded-xl flex items-center justify-center text-white text-sm font-bold cursor-default transition-all duration-200 hover:scale-105"
