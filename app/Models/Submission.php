@@ -16,6 +16,14 @@ class Submission extends Model
         'estimated_reward',
         'status',
         'rejection_reason',
+        'rejected_by',
+        'brand_approved_at',
+        'admin_approved_at',
+    ];
+
+    protected $casts = [
+        'brand_approved_at' => 'datetime',
+        'admin_approved_at' => 'datetime',
     ];
 
     public function user()

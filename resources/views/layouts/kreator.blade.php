@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Dashboard') - Clipper Workspace</title>
     <link rel="icon" type="image/png" href="{{ asset('images/brand/logo-icon.png') }}">
     <link rel="shortcut icon" type="image/png" href="{{ asset('images/brand/logo-icon.png') }}">
@@ -50,13 +51,13 @@
         @click="sidebarOpen = false" style="display: none;">
     </div>
 
-    <div class="flex h-screen overflow-hidden">
+    <div class="flex h-screen overflow-y-hidden">
 
         <!-- ===== SIDEBAR ===== -->
         @include('kreator.partials.sidebar')
 
         <!-- ===== MAIN CONTENT ===== -->
-        <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <div class="flex-1 flex flex-col min-w-0 overflow-y-hidden">
 
             <!-- ===== TOP NAVBAR ===== -->
             @include('kreator.partials.navbar')

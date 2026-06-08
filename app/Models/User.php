@@ -19,6 +19,8 @@ class User extends Authenticatable
         'balance',
         'bank_name',
         'bank_account',
+        'google_id',
+        'avatar',
     ];
 
     protected $hidden = [
@@ -57,5 +59,10 @@ class User extends Authenticatable
     public function deposits()
     {
         return $this->hasMany(Deposit::class);
+    }
+
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
     }
 }
