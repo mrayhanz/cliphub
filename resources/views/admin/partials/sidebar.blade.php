@@ -18,36 +18,36 @@
     <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
         <a href="{{ route('admin.dashboard') }}" class="sidebar-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
             <i data-lucide="layout-dashboard" class="w-4 h-4 flex-shrink-0"></i>
-            Dashboard
+            Halaman Utama
         </a>
 
         <div class="pt-4 pb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-700">Operasional Inti</div>
 
-        <a href="{{ route('admin.submissions') }}" class="sidebar-link {{ request()->routeIs('admin.submissions*') ? 'active' : '' }}">
+        <a href="{{ route('admin.submissions.index') }}" class="sidebar-link {{ request()->routeIs('admin.submissions*') ? 'active' : '' }}">
             <i data-lucide="file-check-2" class="w-4 h-4 flex-shrink-0"></i>
-            <span class="flex-1">Review Submission</span>
+            <span class="flex-1">Pengajuan Ulasan</span>
             <span class="badge-red text-[9px]">12</span>
         </a>
 
         <a href="{{ route('admin.withdrawals') }}" class="sidebar-link {{ request()->routeIs('admin.withdrawals*') ? 'active' : '' }}">
             <i data-lucide="banknote" class="w-4 h-4 flex-shrink-0"></i>
-            <span class="flex-1">Approval Withdrawal</span>
+            <span class="flex-1">Persetujuan Penarikan</span>
             <span class="badge-amber text-[9px]">3</span>
         </a>
 
         <a href="{{ route('admin.campaigns') }}" class="sidebar-link {{ request()->routeIs('admin.campaigns*') ? 'active' : '' }}">
             <i data-lucide="megaphone" class="w-4 h-4 flex-shrink-0"></i>
-            Campaign
+            Kampanye
         </a>
 
-        <a href="{{ route('admin.payouts') }}" class="sidebar-link {{ request()->routeIs('admin.payouts*') ? 'active' : '' }}">
+        <a href="{{ route('admin.transactions.index') }}" class="sidebar-link {{ request()->routeIs('admin.transactions*') ? 'active' : '' }}">
             <i data-lucide="wallet-cards" class="w-4 h-4 flex-shrink-0"></i>
-            Transaksi & Escrow
+            Transaksi &amp; Escrow
         </a>
 
         <div class="pt-4 pb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-700">Pengguna</div>
 
-        <a href="{{ route('admin.users') }}" class="sidebar-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}">
+        <a href="{{ route('admin.users.index') }}" class="sidebar-link {{ request()->routeIs('admin.users*') ? 'active' : '' }}">
             <i data-lucide="users" class="w-4 h-4 flex-shrink-0"></i>
             Semua Pengguna
         </a>
@@ -59,7 +59,7 @@
 
         <a href="{{ route('admin.brands') }}" class="sidebar-link {{ request()->routeIs('admin.brands*') ? 'active' : '' }}">
             <i data-lucide="briefcase-business" class="w-4 h-4 flex-shrink-0"></i>
-            Brand
+            Produk
         </a>
 
         <div class="pt-4 pb-1 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-700">Sistem</div>
@@ -67,6 +67,11 @@
         <a href="{{ route('admin.settings') }}" class="sidebar-link {{ request()->routeIs('admin.settings*') ? 'active' : '' }}">
             <i data-lucide="settings" class="w-4 h-4 flex-shrink-0"></i>
             Pengaturan
+        </a>
+
+        <a href="{{ route('admin.broadcasts.index') }}" class="sidebar-link {{ request()->routeIs('admin.broadcasts*') ? 'active' : '' }}">
+            <i data-lucide="megaphone" class="w-4 h-4 flex-shrink-0"></i>
+            Siaran
         </a>
     </nav>
 

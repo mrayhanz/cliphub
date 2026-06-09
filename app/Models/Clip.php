@@ -3,15 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 
 class Clip extends Model
 {
     protected $fillable = [
         'user_id', 'title', 'hook', 'source_url', 'video_id',
-        'ratio', 'has_captions', 'transcript',
+        'ratio', 'resolution', 'has_captions', 'transcript', 'transcript_segments',
         'start_time', 'end_time', 'duration', 'score', 'status',
         'file_path', 'file_size',
+    ];
+
+    protected $casts = [
+        'has_captions' => 'boolean',
+        'start_time' => 'integer',
+        'end_time' => 'integer',
+        'score' => 'integer',
+        'file_size' => 'integer',
     ];
 
     public function user()
@@ -21,9 +28,10 @@ class Clip extends Model
 
     public function getFileUrlAttribute(): ?string
     {
-        if ($this->file_path && Storage::disk('public')->exists($this->file_path)) {
-            return Storage::disk('public')->url($this->file_path);
+        if ($this->file_path && is_file(storage_path('app/public/' . $this->file_path))) {
+            return route('media.public', ['path' => $this->file_path]);
         }
+
         return null;
     }
 
