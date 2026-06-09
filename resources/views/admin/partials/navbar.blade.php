@@ -23,7 +23,7 @@
         <div class="hidden md:flex items-center gap-2.5 px-3.5 py-2 rounded-xl text-sm text-slate-500 hover:text-slate-300 transition-all duration-200 cursor-text w-52 group"
              style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);">
             <i data-lucide="search" class="w-3.5 h-3.5 flex-shrink-0 group-hover:text-brand transition-colors"></i>
-            <span class="text-xs">Cari sesuatu....</span>
+            <span class="text-xs">Cari sesuatu...</span>
             <span class="ml-auto text-[9px] px-1.5 py-0.5 rounded-md font-mono font-bold text-slate-700" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.05);">⌘K</span>
         </div>
 
