@@ -5,26 +5,41 @@
 
 @section('content')
 @php
-$brands = [
-    ['name'=>'Wardah Beauty','industry'=>'Cosmetics','spend'=>'Rp 120 Jt','campaigns'=>4,'status'=>'Aktif'],
-    ['name'=>'Tokopedia Corp','industry'=>'E-Commerce','spend'=>'Rp 450 Jt','campaigns'=>12,'status'=>'Aktif'],
-    ['name'=>'Shopee ID','industry'=>'E-Commerce','spend'=>'Rp 380 Jt','campaigns'=>8,'status'=>'Aktif'],
-    ['name'=>'Indomie Official','industry'=>'F&B','spend'=>'Rp 45 Jt','campaigns'=>2,'status'=>'Aktif'],
-    ['name'=>'Samsung Indonesia','industry'=>'Electronics','spend'=>'Rp 210 Jt','campaigns'=>5,'status'=>'Aktif'],
-    ['name'=>'Kopi Kenangan','industry'=>'F&B','spend'=>'Rp 30 Jt','campaigns'=>1,'status'=>'Aktif'],
-];
+$brands = \App\Models\User::where('role', 'brand')->latest()->get();
+$totalBrands = \App\Models\User::where('role', 'brand')->count();
+$totalCampaigns = \App\Models\Campaign::whereHas('user', function($q) { $q->where('role', 'brand'); })->count();
+$totalDeposits = \App\Models\Deposit::whereHas('user', function($q) { $q->where('role', 'brand'); })->where('status', 'success')->sum('amount');
 @endphp
 <div class="space-y-5">
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        @foreach([['label'=>'Total Brand','val'=>'301','icon'=>'briefcase','color'=>'brand'],['label'=>'Brand Aktif Bulan Ini','val'=>'86','icon'=>'activity','color'=>'emerald'],['label'=>'Total Ad Spend','val'=>'Rp 4.2 M','icon'=>'trending-up','color'=>'amber'],['label'=>'Rata-rata Budget','val'=>'Rp 14 Jt','icon'=>'wallet','color'=>'violet']] as $s)
         <div class="stat-card">
-            <div class="flex items-center mb-3 w-9 h-9 rounded-xl bg-{{ $s['color'] }}/10 border border-{{ $s['color'] }}/20 items-center justify-center">
-                <i data-lucide="{{ $s['icon'] }}" class="w-4 h-4 text-{{ $s['color']==='brand'?'brand':$s['color'].'-400' }}"></i>
+            <div class="flex items-center mb-3 w-9 h-9 rounded-xl bg-brand/10 border border-brand/20 items-center justify-center">
+                <i data-lucide="briefcase" class="w-4 h-4 text-brand"></i>
             </div>
-            <p class="text-xl font-bold text-white">{{ $s['val'] }}</p>
-            <p class="text-xs text-slate-500">{{ $s['label'] }}</p>
+            <p class="text-xl font-bold text-white">{{ number_format($totalBrands) }}</p>
+            <p class="text-xs text-slate-500">Total Brand</p>
         </div>
-        @endforeach
+        <div class="stat-card">
+            <div class="flex items-center mb-3 w-9 h-9 rounded-xl bg-emerald/10 border border-emerald/20 items-center justify-center">
+                <i data-lucide="activity" class="w-4 h-4 text-emerald-400"></i>
+            </div>
+            <p class="text-xl font-bold text-white">{{ number_format($totalBrands) }}</p>
+            <p class="text-xs text-slate-500">Brand Aktif</p>
+        </div>
+        <div class="stat-card">
+            <div class="flex items-center mb-3 w-9 h-9 rounded-xl bg-amber/10 border border-amber/20 items-center justify-center">
+                <i data-lucide="trending-up" class="w-4 h-4 text-amber-400"></i>
+            </div>
+            <p class="text-xl font-bold text-white">Rp {{ number_format($totalDeposits / 1000000, 1) }} Jt</p>
+            <p class="text-xs text-slate-500">Total Deposit</p>
+        </div>
+        <div class="stat-card">
+            <div class="flex items-center mb-3 w-9 h-9 rounded-xl bg-violet/10 border border-violet/20 items-center justify-center">
+                <i data-lucide="wallet" class="w-4 h-4 text-violet-400"></i>
+            </div>
+            <p class="text-xl font-bold text-white">{{ number_format($totalCampaigns) }}</p>
+            <p class="text-xs text-slate-500">Total Campaign</p>
+        </div>
     </div>
 
     <div class="bg-neutral-900/60 border border-neutral-800/60 rounded-2xl overflow-hidden">
@@ -48,23 +63,41 @@ $brands = [
                     @endforeach
                 </tr></thead>
                 <tbody class="divide-y divide-neutral-800/40">
-                    @foreach($brands as $b)
+                    @forelse($brands as $b)
                     <tr class="hover:bg-white/[2%] transition-colors">
                         <td class="px-5 py-3.5">
                             <div class="flex items-center gap-3">
+                                @if($b->avatar)
+                                <img src="{{ $b->avatar }}" alt="{{ $b->name }}" class="w-8 h-8 rounded-full flex-shrink-0">
+                                @else
                                 <div class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-xs font-bold text-emerald-400 flex-shrink-0">
-                                    {{ strtoupper(substr($b['name'],0,1)) }}
+                                    {{ strtoupper(substr($b->name,0,1)) }}
                                 </div>
-                                <p class="text-sm font-medium text-white">{{ $b['name'] }}</p>
+                                @endif
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <p class="text-sm font-medium text-white">{{ $b->name }}</p>
+                                        @if($b->google_id)
+                                        <span class="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-semibold">Google</span>
+                                        @endif
+                                    </div>
+                                    <p class="text-xs text-slate-500">{{ $b->email }}</p>
+                                </div>
                             </div>
                         </td>
-                        <td class="px-5 py-3.5 text-xs text-slate-300">{{ $b['industry'] }}</td>
-                        <td class="px-5 py-3.5"><span class="text-sm font-semibold text-white">{{ $b['spend'] }}</span></td>
-                        <td class="px-5 py-3.5 text-xs text-slate-400">{{ $b['campaigns'] }} campaign</td>
-                        <td class="px-5 py-3.5"><span class="flex items-center gap-1.5 text-xs font-medium {{ $b['status']==='Aktif' ? 'text-emerald-400' : 'text-slate-500' }}"><span class="w-1.5 h-1.5 rounded-full {{ $b['status']==='Aktif' ? 'bg-emerald-400' : 'bg-slate-600' }} inline-block"></span>{{ $b['status'] }}</span></td>
+                        <td class="px-5 py-3.5 text-xs text-slate-300">-</td>
+                        <td class="px-5 py-3.5"><span class="text-sm font-semibold text-white">Rp {{ number_format($b->balance) }}</span></td>
+                        <td class="px-5 py-3.5 text-xs text-slate-400">{{ \App\Models\Campaign::where('user_id', $b->id)->count() }} campaign</td>
+                        <td class="px-5 py-3.5"><span class="flex items-center gap-1.5 text-xs font-medium text-emerald-400"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>Aktif</span></td>
                         <td class="px-5 py-3.5"><button class="p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-colors"><i data-lucide="eye" class="w-3.5 h-3.5"></i></button></td>
                     </tr>
-                    @endforeach
+                    @empty
+                    <tr>
+                        <td colspan="6" class="px-5 py-8 text-center text-slate-500 text-sm">
+                            Belum ada brand terdaftar
+                        </td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

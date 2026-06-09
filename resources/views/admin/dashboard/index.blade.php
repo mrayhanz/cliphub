@@ -7,10 +7,10 @@
 @section('content')
 @php
 $stats = [
-    ['label' => 'Submission Menunggu', 'val' => '12', 'icon' => 'file-check-2', 'color' => 'amber', 'href' => route('admin.submissions')],
+    ['label' => 'Submission Menunggu', 'val' => '12', 'icon' => 'file-check-2', 'color' => 'amber', 'href' => route('admin.submissions.index')],
     ['label' => 'Withdrawal Menunggu', 'val' => '3', 'icon' => 'banknote', 'color' => 'emerald', 'href' => route('admin.withdrawals')],
     ['label' => 'Campaign Aktif', 'val' => '71', 'icon' => 'megaphone', 'color' => 'brand', 'href' => route('admin.campaigns')],
-    ['label' => 'Pengguna Aktif', 'val' => '1,224', 'icon' => 'users', 'color' => 'violet', 'href' => route('admin.users')],
+    ['label' => 'Pengguna Aktif', 'val' => '1,224', 'icon' => 'users', 'color' => 'violet', 'href' => route('admin.users.index')],
 ];
 
 $tasks = [
@@ -20,7 +20,7 @@ $tasks = [
         'count' => '12',
         'icon' => 'file-check-2',
         'color' => 'amber',
-        'href' => route('admin.submissions'),
+        'href' => route('admin.submissions.index'),
         'action' => 'Review Submission',
     ],
     [
@@ -102,7 +102,7 @@ $recentSubmissions = [
                     <h3 class="text-sm font-bold text-white">Submission Terbaru</h3>
                     <p class="text-[11px] text-slate-500 mt-0.5">Data ini menggantikan dashboard analytics placeholder</p>
                 </div>
-                <a href="{{ route('admin.submissions') }}" class="text-[11px] text-brand hover:text-brand-light font-semibold flex items-center gap-1">
+                <a href="{{ route('admin.submissions.index') }}" class="text-[11px] text-brand hover:text-brand-light font-semibold flex items-center gap-1">
                     Lihat Semua <i data-lucide="arrow-right" class="w-3 h-3"></i>
                 </a>
             </div>
