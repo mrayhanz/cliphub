@@ -109,7 +109,7 @@
                         </div>
                         <div class="flex-1">
                             <label class="block text-xs font-extrabold text-[#a1a1aa] mb-2 tracking-wide">Batas Waktu Target Upload (Deadline) <span class="text-emerald-500">*</span></label>
-                            <input type="date" name="deadline" class="w-full bg-[#000] border border-[#27272a] rounded-2xl px-5 py-3.5 text-sm text-white font-medium transition-all duration-200 focus:outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/15 placeholder:text-[#52525b] placeholder:font-medium" required>
+                            <input type="date" name="deadline" min="{{ \Carbon\Carbon::today('Asia/Jakarta')->toDateString() }}" class="w-full bg-[#000] border border-[#27272a] rounded-2xl px-5 py-3.5 text-sm text-white font-medium transition-all duration-200 focus:outline-none focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/15 placeholder:text-[#52525b] placeholder:font-medium" required>
                         </div>
                     </div>
 
@@ -154,11 +154,11 @@
                     <i data-lucide="shield-check" class="w-6 h-6 text-emerald-400 flex-shrink-0 relative z-10"></i>
                     <div class="relative z-10 w-full">
                         <h4 class="text-sm font-black text-emerald-400 mb-1.5 uppercase tracking-wide">Sistem Pembayaran Escrow Aktif</h4>
-                        <p class="text-[11px] text-slate-400 leading-relaxed mb-4 pr-8">Semua budget yang Anda setorkan akan ditahan dengan aman oleh sistem pintar ClipHub. Saldo hanya akan dipotong ketika kreator sukses memproduksi views yang *tervalidasi* oleh algoritma API kami.</p>
+                        <p class="text-[11px] text-slate-400 leading-relaxed mb-4 pr-8">Saat campaign diluncurkan, budget akan ditahan sebagai escrow. Dana dilepas ke kreator hanya setelah submission disetujui brand dan admin.</p>
                         
                         <div class="inline-flex items-center gap-2.5 px-3 py-2 rounded-lg bg-black border border-white/5 shadow-inner">
                             <span class="text-[10px] font-bold text-slate-500">Saldo Akun Anda Sekarang:</span>
-                            <span class="text-xs font-black text-white">Rp 12.500.000</span>
+                            <span class="text-xs font-black text-white">Rp {{ number_format((float)($balance ?? 0), 0, ',', '.') }}</span>
                         </div>
                     </div>
                 </div>

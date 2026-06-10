@@ -4,12 +4,6 @@
 @section('page_title', 'Brand Dashboard')
 
 @section('content')
-@php
-$activeCampaigns = $campaigns->where('status', 'active')->count();
-$draftCampaigns = $campaigns->where('status', 'draft')->count();
-$totalCampaignBudget = $campaigns->sum('budget');
-@endphp
-
 <div class="space-y-5 pb-8">
     <div class="hero-card p-5 lg:p-7 animate-fade-in-up">
         <div class="absolute -top-20 -right-20 w-64 h-64 rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(16,185,129,0.12) 0%, transparent 70%);"></div>
@@ -63,7 +57,7 @@ $totalCampaignBudget = $campaigns->sum('budget');
             <h2 class="text-lg lg:text-2xl font-black text-white leading-none relative z-10">{{ $activeCampaigns }}</h2>
         </a>
 
-        <a href="{{ route('brand.submissions') }}" class="stat-card group animate-fade-in-up delay-200 block hover:border-white/15 transition-colors">
+        <a href="{{ route('brand.submissions.index') }}" class="stat-card group animate-fade-in-up delay-200 block hover:border-white/15 transition-colors">
             <div class="flex items-start justify-between mb-3 lg:mb-4 relative z-10">
                 <div class="icon-box-amber">
                     <i data-lucide="file-check-2" class="w-4 h-4 text-amber-400"></i>
@@ -112,7 +106,7 @@ $totalCampaignBudget = $campaigns->sum('budget');
                         </div>
                         <span class="w-fit px-2 py-1 rounded-lg text-[9px] font-bold uppercase tracking-widest"
                               style="background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); color: #34d399;">
-                            {{ strtoupper($c->status) }}
+                            {{ strtoupper($c->effective_status_label) }}
                         </span>
                     </div>
 
@@ -162,7 +156,7 @@ $totalCampaignBudget = $campaigns->sum('budget');
                         <span class="text-xs font-bold text-white">Buat campaign baru</span>
                     </div>
                 </a>
-                <a href="{{ route('brand.submissions') }}" class="block rounded-xl p-4 border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
+                <a href="{{ route('brand.submissions.index') }}" class="block rounded-xl p-4 border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] transition-colors">
                     <div class="flex items-center gap-3">
                         <i data-lucide="file-check-2" class="w-4 h-4 text-amber-400"></i>
                         <span class="text-xs font-bold text-white">Review submission kreator</span>

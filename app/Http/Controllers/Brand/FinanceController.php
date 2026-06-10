@@ -24,9 +24,10 @@ class FinanceController extends Controller
         $user = auth()->user();
         $deposits = $user->deposits()->orderBy('created_at', 'desc')->get();
         
-        // Count total escrow and available balance
         $balance = $user->balance ?? 0;
-        $escrow = $user->campaigns()->sum('budget'); // Simplification for now
+        $escrow = $user->campaigns()
+            ->get()
+            ->sum(fn($campaign) => $campaign->escrow_held);
 
         return view('brand.finance.index', compact('user', 'deposits', 'balance', 'escrow'));
     }

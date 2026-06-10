@@ -5,26 +5,40 @@
 
 @section('content')
 @php
-$kreators = [
-    ['name'=>'Rafi Ananda','handle'=>'@rafiananda_','level'=>'Pro','niche'=>'Tech, Gadget','rating'=>'4.9/5.0','jobs'=>45,'status'=>'Aktif'],
-    ['name'=>'Hana Creator','handle'=>'@hanacreates','level'=>'Star','niche'=>'Beauty, Fashion','rating'=>'5.0/5.0','jobs'=>112,'status'=>'Aktif'],
-    ['name'=>'Luna Aesthetic','handle'=>'@luna_vibes','level'=>'Pro','niche'=>'Lifestyle, Food','rating'=>'4.8/5.0','jobs'=>34,'status'=>'Aktif'],
-    ['name'=>'Dimas Viral','handle'=>'@dimas.tv_','level'=>'Beginner','niche'=>'Gaming, Tech','rating'=>'4.2/5.0','jobs'=>5,'status'=>'Aktif'],
-    ['name'=>'Rizky Clips','handle'=>'@rizclips','level'=>'Star','niche'=>'Automotive','rating'=>'4.9/5.0','jobs'=>88,'status'=>'Aktif'],
-    ['name'=>'Nadia UGC','handle'=>'@nadiacontent','level'=>'Beginner','niche'=>'Home, Decor','rating'=>'4.5/5.0','jobs'=>12,'status'=>'Aktif'],
-];
+$kreators = \App\Models\User::where('role', 'kreator')->latest()->get();
+$totalKreators = \App\Models\User::where('role', 'kreator')->count();
+$totalSubmissions = \App\Models\Submission::whereHas('user', function($q) { $q->where('role', 'kreator'); })->where('status', 'approved')->count();
 @endphp
 <div class="space-y-5">
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        @foreach([['label'=>'Total Kreator','val'=>'947','icon'=>'users','color'=>'brand'],['label'=>'Kreator Star','val'=>'102','icon'=>'star','color'=>'amber'],['label'=>'Konten Dibuat','val'=>'4,892','icon'=>'film','color'=>'emerald'],['label'=>'Rata-rata Rating','val'=>'4.6/5.0','icon'=>'star-half','color'=>'violet']] as $s)
         <div class="stat-card">
-            <div class="flex items-center mb-3 w-9 h-9 rounded-xl bg-{{ $s['color'] }}/10 border border-{{ $s['color'] }}/20 items-center justify-center">
-                <i data-lucide="{{ $s['icon'] }}" class="w-4 h-4 text-{{ $s['color']==='brand'?'brand':$s['color'].'-400' }}"></i>
+            <div class="flex items-center mb-3 w-9 h-9 rounded-xl bg-brand/10 border border-brand/20 items-center justify-center">
+                <i data-lucide="users" class="w-4 h-4 text-brand"></i>
             </div>
-            <p class="text-xl font-bold text-white">{{ $s['val'] }}</p>
-            <p class="text-xs text-slate-500">{{ $s['label'] }}</p>
+            <p class="text-xl font-bold text-white">{{ number_format($totalKreators) }}</p>
+            <p class="text-xs text-slate-500">Total Kreator</p>
         </div>
-        @endforeach
+        <div class="stat-card">
+            <div class="flex items-center mb-3 w-9 h-9 rounded-xl bg-amber/10 border border-amber/20 items-center justify-center">
+                <i data-lucide="star" class="w-4 h-4 text-amber-400"></i>
+            </div>
+            <p class="text-xl font-bold text-white">{{ number_format($totalKreators) }}</p>
+            <p class="text-xs text-slate-500">Kreator Aktif</p>
+        </div>
+        <div class="stat-card">
+            <div class="flex items-center mb-3 w-9 h-9 rounded-xl bg-emerald/10 border border-emerald/20 items-center justify-center">
+                <i data-lucide="film" class="w-4 h-4 text-emerald-400"></i>
+            </div>
+            <p class="text-xl font-bold text-white">{{ number_format($totalSubmissions) }}</p>
+            <p class="text-xs text-slate-500">Konten Dibuat</p>
+        </div>
+        <div class="stat-card">
+            <div class="flex items-center mb-3 w-9 h-9 rounded-xl bg-violet/10 border border-violet/20 items-center justify-center">
+                <i data-lucide="star-half" class="w-4 h-4 text-violet-400"></i>
+            </div>
+            <p class="text-xl font-bold text-white">-</p>
+            <p class="text-xs text-slate-500">Rata-rata Rating</p>
+        </div>
     </div>
 
     <div class="bg-neutral-900/60 border border-neutral-800/60 rounded-2xl overflow-hidden">
@@ -48,28 +62,42 @@ $kreators = [
                     @endforeach
                 </tr></thead>
                 <tbody class="divide-y divide-neutral-800/40">
-                    @foreach($kreators as $k)
-                    @php $lc=match($k['level']){'Star'=>'text-amber-400 bg-amber-500/10 border-amber-500/20','Pro'=>'text-brand bg-brand/10 border-brand/20',default=>'text-slate-400 bg-neutral-800 border-neutral-700'}; @endphp
+                    @forelse($kreators as $k)
                     <tr class="hover:bg-white/[2%] transition-colors">
                         <td class="px-5 py-3.5">
                             <div class="flex items-center gap-3">
+                                @if($k->avatar)
+                                <img src="{{ $k->avatar }}" alt="{{ $k->name }}" class="w-8 h-8 rounded-full flex-shrink-0">
+                                @else
                                 <div class="w-8 h-8 rounded-full bg-brand/20 flex items-center justify-center text-xs font-bold text-brand flex-shrink-0">
-                                    {{ strtoupper(substr($k['name'],0,1)) }}
+                                    {{ strtoupper(substr($k->name,0,1)) }}
                                 </div>
+                                @endif
                                 <div>
-                                    <p class="text-sm font-medium text-white">{{ $k['name'] }}</p>
-                                    <p class="text-xs text-slate-500">{{ $k['handle'] }}</p>
+                                    <div class="flex items-center gap-2">
+                                        <p class="text-sm font-medium text-white">{{ $k->name }}</p>
+                                        @if($k->google_id)
+                                        <span class="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-semibold">Google</span>
+                                        @endif
+                                    </div>
+                                    <p class="text-xs text-slate-500">{{ $k->email }}</p>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-5 py-3.5"><span class="text-xs font-semibold px-2 py-0.5 rounded border {{ $lc }}">{{ $k['level'] }}</span></td>
-                        <td class="px-5 py-3.5 text-xs text-slate-300">{{ $k['niche'] }}</td>
-                        <td class="px-5 py-3.5"><div class="flex items-center gap-1.5 text-xs font-semibold text-white"><i data-lucide="star" class="w-3 h-3 text-amber-400 fill-amber-400"></i>{{ $k['rating'] }}</div></td>
-                        <td class="px-5 py-3.5 text-xs text-slate-400">{{ $k['jobs'] }} campaign</td>
-                        <td class="px-5 py-3.5"><span class="flex items-center gap-1.5 text-xs font-medium {{ $k['status']==='Aktif' ? 'text-emerald-400' : 'text-slate-500' }}"><span class="w-1.5 h-1.5 rounded-full {{ $k['status']==='Aktif' ? 'bg-emerald-400' : 'bg-slate-600' }} inline-block"></span>{{ $k['status'] }}</span></td>
+                        <td class="px-5 py-3.5"><span class="text-xs font-semibold px-2 py-0.5 rounded border text-brand bg-brand/10 border-brand/20">Kreator</span></td>
+                        <td class="px-5 py-3.5 text-xs text-slate-300">-</td>
+                        <td class="px-5 py-3.5"><div class="flex items-center gap-1.5 text-xs font-semibold text-white"><i data-lucide="star" class="w-3 h-3 text-amber-400 fill-amber-400"></i>-</div></td>
+                        <td class="px-5 py-3.5 text-xs text-slate-400">{{ \App\Models\Submission::where('user_id', $k->id)->where('status', 'approved')->count() }} konten</td>
+                        <td class="px-5 py-3.5"><span class="flex items-center gap-1.5 text-xs font-medium text-emerald-400"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block"></span>Aktif</span></td>
                         <td class="px-5 py-3.5"><button class="p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-white/5 transition-colors"><i data-lucide="eye" class="w-3.5 h-3.5"></i></button></td>
                     </tr>
-                    @endforeach
+                    @empty
+                    <tr>
+                        <td colspan="7" class="px-5 py-8 text-center text-slate-500 text-sm">
+                            Belum ada kreator terdaftar
+                        </td>
+                    </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
