@@ -3,7 +3,7 @@
 @section('title', $campaign['title'] . ' | ClipHub')
 
 @section('content')
-<div class="max-w-7xl mx-auto pb-12 relative" x-data="{ applied: false }">
+<div class="max-w-7xl mx-auto pb-12 relative">
 
     {{-- TOP NAVIGATION HEADER --}}
     <div class="flex items-center justify-between mb-6 relative z-20">
@@ -23,7 +23,7 @@
 
     {{-- CONTENT WRAPPER --}}
     <div class="relative z-10 px-0 md:px-8">
-        
+
         {{-- HEAD INFO --}}
         <div class="bg-[#121212] border border-white/10 rounded-[1.5rem] shadow-[0_10px_40px_rgba(0,0,0,0.5)] p-6 md:p-8 mb-8 backdrop-blur-xl relative top-0 mx-4 md:mx-0">
             <div class="flex flex-col lg:flex-row gap-6 items-start lg:items-center justify-between">
@@ -49,7 +49,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="text-left lg:text-right bg-neutral-900/50 p-4 rounded-xl border border-white/5 shrink-0 w-full lg:w-auto">
                     <p class="text-[0.7rem] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Rate Komisi</p>
                     <p class="text-2xl font-black text-emerald-400 flex items-baseline gap-1 lg:justify-end">
@@ -61,10 +61,10 @@
 
         {{-- MAIN GRID --}}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start px-4 md:px-0">
-            
-            {{-- LEFT COLUMN: CONTENT --}}
+
+            {{-- LEFT COLUMN --}}
             <div class="lg:col-span-2 space-y-6">
-                
+
                 {{-- Tugas & Cara Kerja --}}
                 <div class="bg-[#121212] border border-white/5 rounded-[1.5rem] p-6 md:p-8 shadow-lg">
                     <h3 class="text-lg font-black text-white flex items-center gap-3 mb-6">
@@ -74,7 +74,6 @@
                         Tugas & Cara Kerja
                     </h3>
                     <p class="text-slate-300 text-sm leading-relaxed mb-6">{{ $campaign['desc'] }}</p>
-
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="bg-neutral-900/50 p-4 rounded-xl border border-white/5 flex items-center gap-4">
                             <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center shrink-0">
@@ -106,7 +105,6 @@
                         Isi Konten Harus Begini
                     </h3>
                     <div class="text-slate-300 text-sm leading-relaxed whitespace-pre-line bg-neutral-900/40 p-5 rounded-xl border border-white/5">{{ $campaign['full_brief'] }}</div>
-
                     <div class="mt-6 p-5 rounded-xl bg-emerald-900/10 border border-emerald-500/20 flex flex-col sm:flex-row sm:items-center gap-4">
                         <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center shrink-0 hidden sm:flex">
                             <i data-lucide="folder-open" class="w-6 h-6 text-emerald-400"></i>
@@ -152,9 +150,9 @@
 
             </div>
 
-            {{-- RIGHT COLUMN: SIDEBAR (STICKY) --}}
+            {{-- RIGHT COLUMN: SIDEBAR --}}
             <div class="lg:col-span-1 border border-white/5 bg-[#121212] p-6 lg:p-8 rounded-[1.5rem] lg:sticky lg:top-8 space-y-8 shadow-lg">
-                
+
                 {{-- Info Detail --}}
                 <div>
                     <h3 class="text-md font-black text-white flex items-center gap-2 mb-6">
@@ -187,40 +185,94 @@
 
                 <hr class="border-neutral-800">
 
-                {{-- ACTION PERTAMA (Ambil Campaign) --}}
-                <div class="space-y-4">
+                {{-- TOMBOL GABUNG CAMPAIGN --}}
+                <div class="space-y-3" id="join-section">
                     <div class="text-center md:text-left lg:text-center">
                         <p class="text-sm text-slate-200 font-bold mb-1">Siap untuk mulai?</p>
                         <p class="text-[0.7rem] text-slate-500">Pastikan kamu sudah membaca seluruh syarat.</p>
                     </div>
-                    
-                    <template x-if="!applied">
-                        <button @click="applied = true" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-4 px-6 rounded-[1rem] transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:-translate-y-0.5 flex justify-center items-center gap-2 group">
-                            Gabung Campaign 
+
+                    @if($campaign['is_joined'])
+                        {{-- Sudah bergabung (status dari database) --}}
+                        <div class="w-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-black py-4 px-6 rounded-[1rem] flex justify-center items-center gap-2">
+                            <i data-lucide="check-circle" class="w-5 h-5"></i> Sudah Bergabung
+                        </div>
+                        <a href="{{ route('kreator.submissions.create') }}" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3 px-6 rounded-[1rem] transition-all flex justify-center items-center gap-2 text-sm">
+                            <i data-lucide="send" class="w-4 h-4"></i> Klaim Views Sekarang
+                        </a>
+                    @else
+                        {{-- Belum bergabung --}}
+                        <button id="btn-join"
+                            onclick="joinCampaign({{ $campaign['id'] }})"
+                            class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-black py-4 px-6 rounded-[1rem] transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] hover:-translate-y-0.5 flex justify-center items-center gap-2 group">
+                            Gabung Campaign
                             <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
                         </button>
-                    </template>
-                    <template x-if="applied">
-                        <button disabled class="w-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-black py-4 px-6 rounded-[1rem] flex justify-center items-center gap-2 cursor-not-allowed">
-                            <i data-lucide="check-circle" class="w-5 h-5"></i> Sudah Bergabung
-                        </button>
-                    </template>
+                    @endif
+
+                    {{-- Toast --}}
+                    <div id="join-toast" class="hidden text-center text-xs font-semibold py-2 px-4 rounded-xl"></div>
                 </div>
             </div>
-            
+
         </div>
     </div>
 </div>
 
 <script>
-    document.addEventListener('alpine:initialized', () => {
-        Alpine.effect(() => {
-            setTimeout(() => {
-                if (window.lucide) {
-                    window.lucide.createIcons();
-                }
-            }, 10);
-        });
+function joinCampaign(campaignId) {
+    const btn = document.getElementById('btn-join');
+    const toast = document.getElementById('join-toast');
+
+    btn.disabled = true;
+    btn.innerHTML = '<svg class="animate-spin w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> Memproses...';
+
+    fetch(`/kreator/campaigns/${campaignId}/join`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            document.getElementById('join-section').innerHTML = `
+                <div class="text-center md:text-left lg:text-center">
+                    <p class="text-sm text-slate-200 font-bold mb-1">Siap untuk mulai?</p>
+                    <p class="text-[0.7rem] text-slate-500">Pastikan kamu sudah membaca seluruh syarat.</p>
+                </div>
+                <div class="w-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-black py-4 px-6 rounded-[1rem] flex justify-center items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    Sudah Bergabung
+                </div>
+                <a href="/kreator/submissions/create" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-black py-3 px-6 rounded-[1rem] transition-all flex justify-center items-center gap-2 text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                    Klaim Views Sekarang
+                </a>
+                <div class="text-center text-xs font-semibold py-2 px-4 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">✓ ${data.message}</div>
+            `;
+            if (window.lucide) window.lucide.createIcons();
+        } else {
+            btn.disabled = false;
+            btn.innerHTML = 'Gabung Campaign <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+            toast.className = 'text-center text-xs font-semibold py-2 px-4 rounded-xl bg-red-500/10 text-red-400 border border-red-500/20';
+            toast.textContent = '✗ ' + data.message;
+            toast.classList.remove('hidden');
+        }
+    })
+    .catch(() => {
+        btn.disabled = false;
+        btn.innerHTML = 'Gabung Campaign';
+        toast.className = 'text-center text-xs font-semibold py-2 px-4 rounded-xl bg-red-500/10 text-red-400 border border-red-500/20';
+        toast.textContent = '✗ Terjadi kesalahan. Silakan coba lagi.';
+        toast.classList.remove('hidden');
     });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.lucide) window.lucide.createIcons();
+});
 </script>
 @endsection

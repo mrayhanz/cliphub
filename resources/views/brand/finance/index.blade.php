@@ -55,7 +55,7 @@
                     <div>
                         <h4 class="text-xs font-bold text-amber-500/80 uppercase tracking-widest mb-1.5">Dana Ditahan (Escrow)</h4>
                         <p class="text-xl lg:text-2xl font-black text-white mb-2 pb-1">Rp {{ number_format((float)$escrow, 0, ',', '.') }}</p>
-                        <p class="text-[10px] lg:text-[11px] text-slate-400 leading-relaxed font-medium">Dana dialokasikan sementara untuk UGC yang masih menunggu direview.</p>
+                        <p class="text-[10px] lg:text-[11px] text-slate-400 leading-relaxed font-medium">Dana campaign yang sedang ditahan dan belum dilepas ke kreator atau direfund.</p>
                     </div>
                 </div>
             </div>
