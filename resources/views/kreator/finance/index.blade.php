@@ -1,6 +1,6 @@
 @extends('layouts.kreator')
 
-@section('title', 'Clipper Wallet')
+@section('title', 'Dompet Pembuat Konten')
 
 @section('content')
 <div class="max-w-6xl mx-auto pb-12 pt-2">
@@ -22,7 +22,7 @@
 
     <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-5 mb-8">
         <div>
-            <h1 class="text-2xl lg:text-3xl font-black text-white tracking-tight mb-2">My Wallet</h1>
+            <h1 class="text-2xl lg:text-3xl font-black text-white tracking-tight mb-2">Dompet Saya</h1>
             <p class="text-sm text-slate-400">Atur penghasilan, tarik dana komisi, dan kelola rekening kamu.</p>
         </div>
         <button class="flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl text-sm font-bold text-white transition-all hover:scale-[1.02] active:scale-95 bg-gradient-to-br from-emerald-600 to-green-500 shadow-[0_8px_24px_rgba(16,185,129,0.35)]" 
@@ -61,12 +61,12 @@
                 </div>
             </div>
             <div class="mt-auto">
-                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Dana Tertahan (Pending)</p>
+                <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Dana Tertahan (Menunggu)</p>
                 <div class="flex items-baseline gap-2">
                     <h2 class="text-2xl font-black text-white leading-none tracking-tight">
                         <span class="text-lg text-slate-400 font-bold mr-0.5">Rp</span>{{ number_format($pending_withdrawal, 0, ',', '.') }}
                     </h2>
-                    <i data-lucide="info" class="w-3.5 h-3.5 text-slate-600 cursor-help" title="Menunggu pencairan diproses oleh admin/brand"></i>
+                    <i data-lucide="info" class="w-3.5 h-3.5 text-slate-600 cursor-help" title="Menunggu pencairan diproses oleh admin/pemilik merek"></i>
                 </div>
             </div>
         </div>
@@ -104,9 +104,18 @@
             
             {{-- Filter Pills --}}
             <div class="flex items-center gap-1.5 p-1 rounded-xl bg-white/[0.03] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)] w-fit">
-                <button class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white/10 text-white shadow-sm transition-colors">Semua</button>
-                <button class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-colors">Masuk</button>
-                <button class="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-colors">Keluar</button>
+                <a href="{{ route('kreator.finance', ['filter' => 'all']) }}"
+                   class="px-3 py-1.5 rounded-lg text-xs font-bold transition-colors {{ ($filter ?? 'all') === 'all' ? 'bg-white/10 text-white shadow-sm' : 'text-slate-400 hover:text-white' }}">
+                    Semua
+                </a>
+                <a href="{{ route('kreator.finance', ['filter' => 'in']) }}"
+                   class="px-3 py-1.5 rounded-lg text-xs font-bold transition-colors {{ ($filter ?? 'all') === 'in' ? 'bg-emerald-500/20 text-emerald-400 shadow-sm' : 'text-slate-400 hover:text-white' }}">
+                    Masuk
+                </a>
+                <a href="{{ route('kreator.finance', ['filter' => 'out']) }}"
+                   class="px-3 py-1.5 rounded-lg text-xs font-bold transition-colors {{ ($filter ?? 'all') === 'out' ? 'bg-red-500/20 text-red-400 shadow-sm' : 'text-slate-400 hover:text-white' }}">
+                    Keluar
+                </a>
             </div>
         </div>
 
@@ -133,16 +142,16 @@
                         <i data-lucide="receipt" class="w-8 h-8 text-slate-600"></i>
                     </div>
                     <h3 class="text-white font-bold mb-1">Belum Ada Transaksi</h3>
-                    <p class="text-xs text-slate-500">Histori penarikan atau pembayaranmu akan muncul di sini.</p>
+                    <p class="text-xs text-slate-500">Riwayat penarikan atau pembayaranmu akan muncul di sini.</p>
                 </div>
             @endforelse
         </div>
         
-        {{-- Load More --}}
+        {{-- Load More / Info --}}
         <div class="p-4 flex justify-center w-full shadow-[0_-1px_0_rgba(255,255,255,0.03)]">
-            <button class="text-[11px] font-bold text-slate-400 hover:text-white transition-colors flex items-center gap-1.5 px-4 py-2 rounded-lg hover:bg-white/5">
-                Tampilkan Lebih Banyak <i data-lucide="chevron-down" class="w-3.5 h-3.5"></i>
-            </button>
+            @if($transactions->count() > 0)
+            <p class="text-[11px] text-slate-600 font-medium">Menampilkan {{ $transactions->count() }} transaksi</p>
+            @endif
         </div>
 
     </div>
@@ -212,7 +221,7 @@
     <div class="bg-[#0f0f0f] rounded-[1.5rem] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08),_0_25px_50px_-12px_rgba(0,0,0,0.8)] w-full max-w-sm overflow-hidden">
         <div class="px-6 py-5 shadow-[0_1px_0_rgba(255,255,255,0.06)] flex justify-between items-center">
             <div>
-                <h3 class="font-black text-white text-base">Ubah Rekening / E-Wallet</h3>
+                <h3 class="font-black text-white text-base">Ubah Rekening / Dompet Digital</h3>
                 <p class="text-[11px] text-slate-400">Pastikan rekening atas nama Anda</p>
             </div>
             <button type="button" onclick="document.getElementById('edit_bank_modal').classList.add('hidden')" class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-colors focus:outline-none">
@@ -224,15 +233,15 @@
             @csrf
             <div class="space-y-4 mb-6">
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-400 mb-1.5">Pilih Bank / E-Wallet</label>
+                    <label class="block text-[11px] font-bold text-slate-400 mb-1.5">Pilih Bank / Dompet Digital</label>
                     <select name="bank_name" id="inp_bank_name" required class="w-full bg-black border-none text-sm font-semibold shadow-[inset_0_0_0_1px_rgba(255,255,255,0.1)] text-white rounded-xl px-4 py-3 outline-none focus:shadow-[inset_0_0_0_1.5px_rgba(16,185,129,0.6)] appearance-none cursor-pointer">
                         <option value="BCA" {{ auth()->user()->bank_name == 'BCA' ? 'selected' : '' }}>Bank BCA</option>
                         <option value="BRI" {{ auth()->user()->bank_name == 'BRI' ? 'selected' : '' }}>Bank BRI</option>
                         <option value="BNI" {{ auth()->user()->bank_name == 'BNI' ? 'selected' : '' }}>Bank BNI</option>
                         <option value="Mandiri" {{ auth()->user()->bank_name == 'Mandiri' ? 'selected' : '' }}>Bank Mandiri</option>
-                        <option value="DANA" {{ auth()->user()->bank_name == 'DANA' ? 'selected' : '' }}>DANA (E-Wallet)</option>
-                        <option value="GoPay" {{ auth()->user()->bank_name == 'GoPay' ? 'selected' : '' }}>GoPay (E-Wallet)</option>
-                        <option value="OVO" {{ auth()->user()->bank_name == 'OVO' ? 'selected' : '' }}>OVO (E-Wallet)</option>
+                        <option value="DANA" {{ auth()->user()->bank_name == 'DANA' ? 'selected' : '' }}>DANA (Dompet Digital)</option>
+                        <option value="GoPay" {{ auth()->user()->bank_name == 'GoPay' ? 'selected' : '' }}>GoPay (Dompet Digital)</option>
+                        <option value="OVO" {{ auth()->user()->bank_name == 'OVO' ? 'selected' : '' }}>OVO (Dompet Digital)</option>
                         <option value="ShopeePay" {{ auth()->user()->bank_name == 'ShopeePay' ? 'selected' : '' }}>ShopeePay</option>
                     </select>
                 </div>
