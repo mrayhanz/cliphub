@@ -31,7 +31,7 @@
             Buat Campaign
         </a>
 
-        <a href="{{ route('brand.submissions') }}" class="brand-link {{ request()->routeIs('brand.submissions*') ? 'active' : '' }}">
+        <a href="{{ route('brand.submissions.index') }}" class="brand-link {{ request()->routeIs('brand.submissions*') ? 'active' : '' }}">
             <i data-lucide="file-check-2" class="w-4 h-4 flex-shrink-0"></i>
             <span class="flex-1">Review Submission</span>
             <span class="badge-red text-[9px]">0</span>
